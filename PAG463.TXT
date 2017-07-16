@@ -2,9 +2,10 @@ OBJECT Page 463 Jobs Setup
 {
   OBJECT-PROPERTIES
   {
-    Date=25/10/16;
-    Time=12:00:00;
-    Version List=NAVW110.00;
+    Date=16/07/17;
+    Time=00:00:00;
+    Modified=Yes;
+    Version List=NAVW110.00,TRELLO;
   }
   PROPERTIES
   {
@@ -28,6 +29,20 @@ OBJECT Page 463 Jobs Setup
                  END;
                END;
 
+    ActionList=ACTIONS
+    {
+      { 1000000004;  ;ActionContainer;
+                      ActionContainerType=RelatedInformation }
+      { 1000000005;1 ;Action    ;
+                      Name=TrelloList;
+                      CaptionML=[ENU=Trello List Setup;
+                                 ENG=Trello List Setup];
+                      RunObject=Page 50000;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=CheckList;
+                      PromotedCategory=Process }
+    }
   }
   CONTROLS
   {
@@ -100,6 +115,21 @@ OBJECT Page 463 Jobs Setup
                 ApplicationArea=#Jobs;
                 SourceExpr="Job WIP Nos." }
 
+    { 1000000000;1;Group  ;
+                Name=TrelloIntegration;
+                CaptionML=[ENU=Trello;
+                           ENG=Trello];
+                GroupType=Group }
+
+    { 1000000001;2;Field  ;
+                SourceExpr="Trello API Key" }
+
+    { 1000000002;2;Field  ;
+                SourceExpr="Trello API Token" }
+
+    { 1000000003;2;Field  ;
+                SourceExpr="Trello API Base URL" }
+
     { 1900000007;0;Container;
                 ContainerType=FactBoxArea }
 
@@ -120,6 +150,13 @@ OBJECT Page 463 Jobs Setup
       JobSimplificationAvailable@1000 : Boolean;
 
     BEGIN
+    {
+      // TRELLO //
+      New Group: TrelloIntegration
+      New Fields: "Trello API Key", "Trello API Token", "Trello API Base URL"
+      New Action: TrelloList
+      // TRELLO //
+    }
     END.
   }
 }

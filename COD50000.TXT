@@ -1,0 +1,301 @@
+OBJECT Codeunit 50000 Trello Management
+{
+  OBJECT-PROPERTIES
+  {
+    Date=16/07/17;
+    Time=00:00:00;
+    Modified=Yes;
+    Version List=TRELLO;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      TxtBoardName@1000000001 : TextConst 'ENU=%1 - %2;ENG=%1 - %2';
+      JobsSetup@1000000000 : Record 315;
+      TxtCardName@1000000002 : TextConst 'ENU=%1 - %2;ENG=%1 - %2';
+
+    LOCAL PROCEDURE "//Board//"@1000000011();
+    BEGIN
+    END;
+
+    PROCEDURE CreateBoard@1000000012(VAR Job@1000000000 : Record 167);
+    BEGIN
+      OnBeforeCreateBoard(Job);
+      DoCreateBoard(Job);
+      OnAfterCreateBoard(Job);
+    END;
+
+    LOCAL PROCEDURE DoCreateBoard@1000000013(VAR Job@1000000000 : Record 167);
+    VAR
+      RequestURL@1000000007 : Text;
+      Resource@1000000006 : Text;
+      BoardName@1000000005 : Text;
+      BoardDescription@1000000004 : Text;
+      HttpContent@1000000003 : DotNet "'System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.System.Net.Http.HttpContent";
+      HttpResponseMessage@1000000002 : DotNet "'System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.System.Net.Http.HttpResponseMessage";
+      Content@1000000001 : Text;
+      TxtRequestURL@1000000008 : TextConst 'ENU="%1/%2?name=%3&key=%4&token=%5&defaultLists=false&desc=%6"';
+    BEGIN
+      JobsSetup.GET;
+
+      Resource := 'boards';
+      BoardName := STRSUBSTNO(TxtBoardName, Job."No.", Job.Description);
+      BoardDescription := Job.Description;
+
+      RequestURL := STRSUBSTNO(TxtRequestURL, JobsSetup."Trello API Base URL", Resource, BoardName,
+                               JobsSetup."Trello API Key", JobsSetup."Trello API Token", BoardDescription);
+
+      CallRESTWebService(JobsSetup."Trello API Base URL", RequestURL, 'POST', HttpContent, HttpResponseMessage);
+      Content := HttpResponseMessage.Content.ReadAsStringAsync.Result;
+
+      Job."Trello Board ID" := GetTrelloObjectID(Content);
+      Job."Trello Board URL" := GetTrelloBoardURL(Content);
+      Job.MODIFY;
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeCreateBoard@1000000004(VAR Job@1000000000 : Record 167);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnAfterCreateBoard@1000000009(VAR Job@1000000000 : Record 167);
+    BEGIN
+    END;
+
+    LOCAL PROCEDURE "//List//"@1000000008();
+    BEGIN
+    END;
+
+    PROCEDURE CreateList@1000000000(VAR Job@1000000000 : Record 167;TrelloList@1000000001 : Record 50000);
+    BEGIN
+      OnBeforeCreateList(Job);
+      DoCreateList(Job, TrelloList);
+      OnAfterCreateList(Job);
+    END;
+
+    LOCAL PROCEDURE DoCreateList@1000000002(VAR Job@1000000000 : Record 167;TrelloList@1000000007 : Record 50000);
+    VAR
+      RequestURL@1000000005 : Text;
+      Resource@1000000004 : Text;
+      HttpContent@1000000003 : DotNet "'System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.System.Net.Http.HttpContent";
+      HttpResponseMessage@1000000002 : DotNet "'System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.System.Net.Http.HttpResponseMessage";
+      Content@1000000001 : Text;
+      ListId@1000000008 : Text;
+      TxtRequestURL@1000000006 : TextConst 'ENU="%1/%2?name=%3&idBoard=%4&key=%5&token=%6&pos=bottom"';
+    BEGIN
+      JobsSetup.GET;
+
+      Resource := 'lists';
+      RequestURL := STRSUBSTNO(TxtRequestURL, JobsSetup."Trello API Base URL", Resource, TrelloList.Name, Job."Trello Board ID",
+                               JobsSetup."Trello API Key", JobsSetup."Trello API Token");
+      CallRESTWebService(JobsSetup."Trello API Base URL", RequestURL, 'POST', HttpContent, HttpResponseMessage);
+
+      Content := HttpResponseMessage.Content.ReadAsStringAsync.Result;
+      ListId := GetTrelloObjectID(Content);
+
+      IF TrelloList."Starting List" THEN BEGIN
+        Job."Trello Starting List ID" := ListId;
+        Job.MODIFY;
+      END;
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeCreateList@1000000010(VAR Job@1000000000 : Record 167);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnAfterCreateList@1000000014(VAR Job@1000000000 : Record 167);
+    BEGIN
+    END;
+
+    LOCAL PROCEDURE "//Card//"@1000000007();
+    BEGIN
+    END;
+
+    PROCEDURE CreateCard@1000000005(VAR JobTask@1000000000 : Record 1001);
+    BEGIN
+      OnBeforeCreateCard(JobTask);
+      DoCreateCard(JobTask);
+      OnAfterCreateCard(JobTask);
+    END;
+
+    LOCAL PROCEDURE DoCreateCard@1000000006(VAR JobTask@1000000000 : Record 1001);
+    VAR
+      RequestURL@1000000006 : Text;
+      Resource@1000000005 : Text;
+      HttpContent@1000000004 : DotNet "'System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.System.Net.Http.HttpContent";
+      HttpResponseMessage@1000000003 : DotNet "'System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.System.Net.Http.HttpResponseMessage";
+      TxtRequestURL@1000000001 : TextConst 'ENU="%1/%2?name=%3&key=%4&token=%5&idList=%6"';
+      Job@1000000007 : Record 167;
+      CardName@1000000002 : Text;
+      Content@1000000008 : Text;
+    BEGIN
+      JobsSetup.GET;
+
+      Job.GET(JobTask."Job No.");
+      Job.TESTFIELD("Trello Board ID");
+      Job.TESTFIELD("Trello Starting List ID");
+
+      Resource := 'cards';
+      CardName := STRSUBSTNO(TxtCardName, JobTask."Job Task No.", JobTask.Description);
+
+      RequestURL := STRSUBSTNO(TxtRequestURL, JobsSetup."Trello API Base URL", Resource, JobTask.Description, JobsSetup."Trello API Key",
+                               JobsSetup."Trello API Token", Job."Trello Starting List ID");
+      CallRESTWebService(JobsSetup."Trello API Base URL", RequestURL, 'POST', HttpContent, HttpResponseMessage);
+      Content := HttpResponseMessage.Content.ReadAsStringAsync.Result;
+
+      JobTask."Trello Card Created" := TRUE;
+      JobTask."Trello Card ID" := GetTrelloObjectID(Content);
+      JobTask.MODIFY;
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeCreateCard@1000000017(VAR JobTask@1000000000 : Record 1001);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnAfterCreateCard@1000000018(VAR JobTask@1000000000 : Record 1001);
+    BEGIN
+    END;
+
+    PROCEDURE DeployNewTasks@1000000023(VAR Job@1000000000 : Record 167);
+    BEGIN
+      OnBeforeDeployNewTasks(Job);
+      DoDeployNewTasks(Job);
+      OnAfterDeployNewTasks(Job);
+    END;
+
+    LOCAL PROCEDURE DoDeployNewTasks@1000000022(VAR Job@1000000001 : Record 167);
+    VAR
+      JobTask@1000000000 : Record 1001;
+    BEGIN
+      WITH JobTask DO BEGIN
+        SETRANGE("Job No.", Job."No.");
+        SETRANGE("Job Task Type", "Job Task Type"::Posting);
+        SETRANGE("Trello Card Created", FALSE);
+        IF FINDSET THEN
+          REPEAT
+            CreateCard(JobTask);
+          UNTIL NEXT = 0;
+      END;
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeDeployNewTasks@1000000021(VAR Job@1000000000 : Record 167);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnAfterDeployNewTasks@1000000020(VAR Job@1000000000 : Record 167);
+    BEGIN
+    END;
+
+    LOCAL PROCEDURE "//Job//"@1000000019();
+    BEGIN
+    END;
+
+    PROCEDURE ResetTrelloInfoOnJob@1000000024(VAR Job@1000000000 : Record 167);
+    BEGIN
+      DoResetTrelloInfoOnJob(Job);
+    END;
+
+    LOCAL PROCEDURE DoResetTrelloInfoOnJob@1000000032(VAR Job@1000000000 : Record 167);
+    VAR
+      JobTask@1000000001 : Record 1001;
+      TxtConfirmReset@1000000002 : TextConst 'ENU=You are about to clear the Trello Integration related field for Job No: ''%1''. Would you like to continue?;ENG=You are about to clear the Trello Integration related field for Job No: ''%1''. Would you like to continue?';
+    BEGIN
+      IF NOT CONFIRM(STRSUBSTNO(TxtConfirmReset, Job."No."), TRUE) THEN
+        EXIT;
+
+      WITH Job DO BEGIN
+        "Trello Board ID" := '';
+        "Trello Board URL" := '';
+        "Trello Starting List ID" := '';
+        MODIFY;
+      END;
+
+      WITH JobTask DO BEGIN
+        SETRANGE("Job No.", Job."No.");
+        SETRANGE("Job Task Type", "Job Task Type"::Posting);
+        IF FINDSET THEN
+          REPEAT
+            "Trello Card Created" := FALSE;
+            "Trello Card ID" := '';
+            MODIFY;
+          UNTIL NEXT = 0;
+      END;
+    END;
+
+    LOCAL PROCEDURE "//Methods//"@1000000015();
+    BEGIN
+    END;
+
+    LOCAL PROCEDURE GetTrelloObjectID@1000000001(JsonObject@1000000000 : Text) BoardId : Text;
+    VAR
+      ValueStart@1000000002 : Integer;
+      ValueEnd@1000000001 : Integer;
+    BEGIN
+      ValueStart := STRPOS(JsonObject, ':');
+      ValueEnd := STRPOS(JsonObject, ',');
+
+      ValueStart := ValueStart + 2;
+      ValueEnd := ValueEnd - 1;
+
+      IF (ValueStart > 0) AND (ValueEnd > 0) THEN
+        BoardId := COPYSTR(JsonObject, ValueStart, ValueEnd-ValueStart);
+    END;
+
+    LOCAL PROCEDURE GetTrelloBoardURL@1000000003(JsonObject@1000000000 : Text) BoardUrl : Text;
+    VAR
+      ValueStart@1000000002 : Integer;
+      ValueEnd@1000000001 : Integer;
+    BEGIN
+      ValueStart := STRPOS(JsonObject, '"url"');
+      ValueEnd := STRPOS(JsonObject, '"shortUrl"');
+
+      ValueStart := ValueStart+7;
+      ValueEnd := ValueEnd-2;
+
+      IF (ValueStart > 0) AND (ValueEnd > 0) THEN
+        BoardUrl := COPYSTR(JsonObject, ValueStart, ValueEnd-ValueStart);
+    END;
+
+    PROCEDURE CallRESTWebService@1000000016(BaseUrl@1000000000 : Text;Method@1000000001 : Text;RestMethod@1000000002 : Text;VAR HttpContent@1000000003 : DotNet "'System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.System.Net.Http.HttpContent";VAR HttpResponseMessage@1000000004 : DotNet "'System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.System.Net.Http.HttpResponseMessage");
+    VAR
+      HttpClient@1000000005 : DotNet "'System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.System.Net.Http.HttpClient";
+      Uri@1000000006 : DotNet "'System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Uri";
+    BEGIN
+      HttpClient := HttpClient.HttpClient;
+      HttpClient.BaseAddress := Uri.Uri(BaseUrl);
+
+      CASE RestMethod OF
+        'GET':
+          HttpResponseMessage := HttpClient.GetAsync(Method).Result;
+        'POST':
+          HttpResponseMessage := HttpClient.PostAsync(Method, HttpContent).Result;
+        'PUT':
+          HttpResponseMessage := HttpClient.PutAsync(Method, HttpContent).Result;
+        'DELETE':
+          HttpResponseMessage := HttpClient.DeleteAsync(Method).Result;
+      END;
+
+      HttpResponseMessage.EnsureSuccessStatusCode;
+    END;
+
+    BEGIN
+    {
+      // TRELLO //
+    }
+    END.
+  }
+}
+

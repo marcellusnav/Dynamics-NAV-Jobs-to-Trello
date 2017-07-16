@@ -1,0 +1,42 @@
+OBJECT Table 50000 Trello List
+{
+  OBJECT-PROPERTIES
+  {
+    Date=16/07/17;
+    Time=00:00:00;
+    Modified=Yes;
+    Version List=TRELLO;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Trello List;
+               ENG=Trello List];
+  }
+  FIELDS
+  {
+    { 1   ;   ;Code                ;Code10        ;CaptionML=[ENU=Code;
+                                                              ENG=Code];
+                                                   NotBlank=Yes }
+    { 2   ;   ;Name                ;Text30        ;CaptionML=[ENU=Name;
+                                                              ENG=Name] }
+    { 3   ;   ;Starting List       ;Boolean       ;CaptionML=[ENU=Starting List;
+                                                              ENG=Starting List] }
+  }
+  KEYS
+  {
+    {    ;Code                                    ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    BEGIN
+    {
+      // TRELLO //
+    }
+    END.
+  }
+}
+

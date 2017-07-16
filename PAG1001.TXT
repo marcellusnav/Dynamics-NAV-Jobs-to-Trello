@@ -2,9 +2,10 @@ OBJECT Page 1001 Job Task Lines Subform
 {
   OBJECT-PROPERTIES
   {
-    Date=30/03/17;
-    Time=12:00:00;
-    Version List=NAVW110.00.00.16177;
+    Date=16/07/17;
+    Time=00:00:00;
+    Modified=Yes;
+    Version List=NAVW110.00.00.16177,TRELLO;
   }
   PROPERTIES
   {
@@ -465,6 +466,9 @@ OBJECT Page 1001 Job Task Lines Subform
                             END;
                              }
 
+    { 1000000000;2;Field  ;
+                SourceExpr="Trello Card Created" }
+
   }
   CODE
   {
@@ -474,6 +478,11 @@ OBJECT Page 1001 Job Task Lines Subform
       StyleIsStrong@1000 : Boolean INDATASET;
 
     BEGIN
+    {
+      // TRELLO //
+      New Fields: "Trello Card Created"
+      // TRELLO //
+    }
     END.
   }
 }

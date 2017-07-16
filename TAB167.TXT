@@ -2,9 +2,10 @@ OBJECT Table 167 Job
 {
   OBJECT-PROPERTIES
   {
-    Date=28/04/17;
-    Time=12:00:00;
-    Version List=NAVW110.00.00.16585;
+    Date=16/07/17;
+    Time=00:00:00;
+    Modified=Yes;
+    Version List=NAVW110.00.00.16585,TRELLO;
   }
   PROPERTIES
   {
@@ -620,6 +621,16 @@ OBJECT Table 167 Job
     { 1036;   ;Project Manager     ;Code50        ;TableRelation="User Setup";
                                                    CaptionML=[ENU=Project Manager;
                                                               ENG=Project Manager] }
+    { 50000;  ;Trello Board ID     ;Text30        ;CaptionML=[ENU=Trello Board ID;
+                                                              ENG=Trello Board ID];
+                                                   Editable=No }
+    { 50001;  ;Trello Starting List ID;Text80     ;CaptionML=[ENU=Trello Starting List ID;
+                                                              ENG=Trello Starting List ID];
+                                                   Editable=No }
+    { 50002;  ;Trello Board URL    ;Text250       ;ExtendedDatatype=URL;
+                                                   CaptionML=[ENU=Trello Board URL;
+                                                              ENG=Trello Board URL];
+                                                   Editable=No }
   }
   KEYS
   {
@@ -666,6 +677,8 @@ OBJECT Table 167 Job
       DocTxt@1027 : TextConst 'ENU=Job Quote;ENG=Job Quote';
       RunWIPFunctionsQst@1028 : TextConst '@@@="%1 = The name of the Job Calculate WIP report";ENU=You must run the %1 function to create completion entries for this job. \Do you want to run this function now?;ENG=You must run the %1 function to create completion entries for this job. \Do you want to run this function now?';
       WIPQst@1029 : Text;
+      DeployJobMethod@1000000000 : Codeunit 50001;
+      TrelloManagement@1000000002 : Codeunit 50000;
 
     PROCEDURE AssistEdit@2(OldJob@1000 : Record 167) : Boolean;
     BEGIN
@@ -1151,7 +1164,32 @@ OBJECT Table 167 Job
         ReportSelections.Usage::JQ,Rec,FIELDNO("No."),DocTxt,FIELDNO("Bill-to Customer No."),ShowDialog);
     END;
 
+    LOCAL PROCEDURE "//TRELLO//"@1000000000();
     BEGIN
+    END;
+
+    PROCEDURE DeployToTrello@1000000001();
+    BEGIN
+      DeployJobMethod.DeployJobToTrello(Rec);
+    END;
+
+    PROCEDURE DeployNewJobTasksToTrello@1000000003();
+    BEGIN
+      TrelloManagement.DeployNewTasks(Rec);
+    END;
+
+    PROCEDURE ResetTrelloInfo@1000000002();
+    BEGIN
+      TrelloManagement.ResetTrelloInfoOnJob(Rec);
+    END;
+
+    BEGIN
+    {
+      // TRELLO //
+      New Fields: "Trello Board ID", "Trello Starting List ID", "Trello Board URL"
+      New Functions: DeployToTrello, DeployNewJobTasksToTrello, ResetTrelloInfo
+      // TRELLO //
+    }
     END.
   }
 }

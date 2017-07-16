@@ -2,9 +2,10 @@ OBJECT Page 88 Job Card
 {
   OBJECT-PROPERTIES
   {
-    Date=24/11/16;
-    Time=12:00:00;
-    Version List=NAVW110.00.00.14199,NAVGB10.00.00.14199;
+    Date=16/07/17;
+    Time=00:00:00;
+    Modified=Yes;
+    Version List=NAVW110.00.00.14199,NAVGB10.00.00.14199,TRELLO;
   }
   PROPERTIES
   {
@@ -286,6 +287,45 @@ OBJECT Page 88 Job Card
                                  Job.COPY(Rec);
                                  Job.SETRANGE("No.","No.");
                                  REPORT.RUNMODAL(REPORT::"Job Post WIP to G/L",TRUE,FALSE,Job);
+                               END;
+                                }
+      { 1000000004;1 ;ActionGroup;
+                      CaptionML=[ENU=Trello;
+                                 ENG=Trello];
+                      ActionContainerType=NewDocumentItems }
+      { 1000000005;1 ;Action    ;
+                      Name=DeployToTrello;
+                      CaptionML=[ENU=Deploy To Trello;
+                                 ENG=Deploy To Trello];
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=TaskPage;
+                      PromotedCategory=Process;
+                      OnAction=BEGIN
+                                 DeployToTrello;
+                               END;
+                                }
+      { 1000000006;1 ;Action    ;
+                      Name=DeployNewTasksToTrello;
+                      CaptionML=[ENU=Deploy New Tasks To Trello;
+                                 ENG=Deploy New Tasks To Trello];
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=TaskQualityMeasure;
+                      PromotedCategory=Process;
+                      OnAction=BEGIN
+                                 DeployNewJobTasksToTrello;
+                               END;
+                                }
+      { 1000000007;1 ;Action    ;
+                      Name=ResetTrelloInfo;
+                      CaptionML=[ENU=Reset Trello Information;
+                                 ENG=Reset Trello Information];
+                      Promoted=Yes;
+                      Image=ResetStatus;
+                      PromotedCategory=Process;
+                      OnAction=BEGIN
+                                 ResetTrelloInfo;
                                END;
                                 }
       { 1900000006;0 ;ActionContainer;
@@ -813,6 +853,21 @@ OBJECT Page 88 Job Card
                 SourceExpr="Calc. Recog. Costs G/L Amount";
                 Visible=FALSE }
 
+    { 1000000000;1;Group  ;
+                Name=TrelloIntegration;
+                CaptionML=[ENU=Trello;
+                           ENG=Trello];
+                GroupType=Group }
+
+    { 1000000002;2;Field  ;
+                SourceExpr="Trello Board URL" }
+
+    { 1000000001;2;Field  ;
+                SourceExpr="Trello Board ID" }
+
+    { 1000000003;2;Field  ;
+                SourceExpr="Trello Starting List ID" }
+
     { 1900000007;0;Container;
                 ContainerType=FactBoxArea }
 
@@ -891,6 +946,14 @@ OBJECT Page 88 Job Card
     END;
 
     BEGIN
+    {
+      // TRELLO //
+      New Group: TrelloIntegration
+      New Fields: "Trello Board ID", "Trello Starting List ID", "Trello Board URL"
+      New Action Group: Trello
+      New Actions: DeployToTrello, DeployNewTasksToTrello
+      // TRELLO //
+    }
     END.
   }
 }

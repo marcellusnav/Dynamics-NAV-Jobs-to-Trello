@@ -1,0 +1,46 @@
+OBJECT Page 50000 Trello Lists
+{
+  OBJECT-PROPERTIES
+  {
+    Date=16/07/17;
+    Time=00:00:00;
+    Modified=Yes;
+    Version List=TRELLO;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Trello Lists;
+               ENG=Trello Lists];
+    SourceTable=Table50000;
+    PageType=List;
+  }
+  CONTROLS
+  {
+    { 1000000000;0;Container;
+                ContainerType=ContentArea }
+
+    { 1000000001;1;Group  ;
+                Name=Group;
+                GroupType=Repeater }
+
+    { 1000000002;2;Field  ;
+                SourceExpr=Code }
+
+    { 1000000003;2;Field  ;
+                SourceExpr=Name }
+
+    { 1000000004;2;Field  ;
+                SourceExpr="Starting List" }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    {
+      // TRELLO //
+    }
+    END.
+  }
+}
+

@@ -1,0 +1,45 @@
+OBJECT Table 50001 Trello Deployed List
+{
+  OBJECT-PROPERTIES
+  {
+    Date=16/07/17;
+    Time=00:00:00;
+    Modified=Yes;
+    Version List=TRELLO;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Trello Deployed List;
+               ENG=Trello Deployed List];
+  }
+  FIELDS
+  {
+    { 1   ;   ;Job No.             ;Code20        ;CaptionML=[ENU=Job No.;
+                                                              ENG=Job No.] }
+    { 2   ;   ;List Code           ;Code10        ;CaptionML=[ENU=List Code;
+                                                              ENG=List Code] }
+    { 3   ;   ;Starting List       ;Boolean       ;CaptionML=[ENU=Starting List;
+                                                              ENG=Starting List] }
+    { 4   ;   ;Board Id            ;Text30        ;CaptionML=[ENU=Board Id;
+                                                              ENG=Board Id] }
+    { 5   ;   ;List Id             ;Text30        ;CaptionML=[ENU=List Id;
+                                                              ENG=List Id] }
+  }
+  KEYS
+  {
+    {    ;Job No.,List Code                       ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    BEGIN
+    {
+      // TRELLO //
+    }
+    END.
+  }
+}
+

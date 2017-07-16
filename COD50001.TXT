@@ -1,0 +1,78 @@
+OBJECT Codeunit 50001 Deploy Job Method
+{
+  OBJECT-PROPERTIES
+  {
+    Date=16/07/17;
+    Time=00:00:00;
+    Modified=Yes;
+    Version List=TRELLO;
+  }
+  PROPERTIES
+  {
+    TableNo=167;
+    OnRun=BEGIN
+            DeployJobToTrello(Rec);
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      TrelloManagement@1000000001 : Codeunit 50000;
+
+    PROCEDURE DeployJobToTrello@1000000001(VAR Job@1000000000 : Record 167);
+    BEGIN
+      OnBeforeDeployJobToTrello(Job);
+      DoDeployJobToTrello(Job);
+      OnAfterDeployJobToTrello(Job);
+    END;
+
+    LOCAL PROCEDURE DoDeployJobToTrello@1000000002(VAR Job@1000000000 : Record 167);
+    BEGIN
+      TrelloManagement.CreateBoard(Job);
+      CreateLists(Job);
+      CreateCards(Job);
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeDeployJobToTrello@1000000003(VAR Job@1000000000 : Record 167);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnAfterDeployJobToTrello@1000000004(VAR Job@1000000000 : Record 167);
+    BEGIN
+    END;
+
+    LOCAL PROCEDURE CreateLists@1000000010(VAR Job@1000000000 : Record 167);
+    VAR
+      TrelloList@1000000001 : Record 50000;
+    BEGIN
+      IF TrelloList.FINDSET THEN
+        REPEAT
+          TrelloManagement.CreateList(Job, TrelloList);
+        UNTIL TrelloList.NEXT = 0;
+    END;
+
+    LOCAL PROCEDURE CreateCards@1000000005(VAR Job@1000000000 : Record 167);
+    VAR
+      JobTask@1000000001 : Record 1001;
+    BEGIN
+      WITH JobTask DO BEGIN
+        SETRANGE("Job No.", Job."No.");
+        SETRANGE("Job Task Type", "Job Task Type"::Posting);
+        IF FINDSET THEN
+          REPEAT
+            TrelloManagement.CreateCard(JobTask);
+          UNTIL NEXT = 0;
+      END;
+    END;
+
+    BEGIN
+    {
+      // TRELLO //
+    }
+    END.
+  }
+}
+

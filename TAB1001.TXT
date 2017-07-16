@@ -2,9 +2,10 @@ OBJECT Table 1001 Job Task
 {
   OBJECT-PROPERTIES
   {
-    Date=25/10/16;
-    Time=12:00:00;
-    Version List=NAVW110.00;
+    Date=16/07/17;
+    Time=00:00:00;
+    Modified=Yes;
+    Version List=NAVW110.00,TRELLO;
   }
   PROPERTIES
   {
@@ -365,6 +366,12 @@ OBJECT Table 1001 Job Task
                                                    CaptionML=[ENU=End Date;
                                                               ENG=End Date];
                                                    Editable=No }
+    { 50000;  ;Trello Card ID      ;Code30        ;CaptionML=[ENU=Trello Card ID;
+                                                              ENG=Trello Card ID];
+                                                   Editable=No }
+    { 50001;  ;Trello Card Created ;Boolean       ;CaptionML=[ENU=Trello Card Created;
+                                                              ENG=Trello Card Created];
+                                                   Editable=No }
   }
   KEYS
   {
@@ -474,7 +481,23 @@ OBJECT Table 1001 Job Task
       DimMgt.DeleteJobTaskTempDim;
     END;
 
+    LOCAL PROCEDURE "//TRELLO//"@1000000000();
     BEGIN
+    END;
+
+    PROCEDURE DeployTaskToTrello@1000000001();
+    VAR
+      TrelloManagement@1000000000 : Codeunit 50000;
+    BEGIN
+      TrelloManagement.CreateCard(Rec);
+    END;
+
+    BEGIN
+    {
+      // TRELLO //
+      New Fields: "Trello Card ID", "Trello Card Created"
+      // TRELLO //
+    }
     END.
   }
 }
