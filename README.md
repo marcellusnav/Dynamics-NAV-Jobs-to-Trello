@@ -1,4 +1,4 @@
-# NAVello
+# Dynamics NAV Jobs to Trello 
 Send jobs from Microsoft Dynamics NAV to Trello.
 
 # How To
