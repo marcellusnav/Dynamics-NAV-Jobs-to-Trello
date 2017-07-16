@@ -1,0 +1,126 @@
+OBJECT Page 463 Jobs Setup
+{
+  OBJECT-PROPERTIES
+  {
+    Date=25/10/16;
+    Time=12:00:00;
+    Version List=NAVW110.00;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Jobs Setup;
+               ENG=Jobs Setup];
+    InsertAllowed=No;
+    DeleteAllowed=No;
+    SourceTable=Table315;
+    PageType=Card;
+    OnInit=VAR
+             Job@1000 : Record 167;
+           BEGIN
+             JobSimplificationAvailable := Job.IsJobSimplificationAvailable;
+           END;
+
+    OnOpenPage=BEGIN
+                 RESET;
+                 IF NOT GET THEN BEGIN
+                   INIT;
+                   INSERT;
+                 END;
+               END;
+
+  }
+  CONTROLS
+  {
+    { 1900000001;0;Container;
+                ContainerType=ContentArea }
+
+    { 1   ;1   ;Group     ;
+                CaptionML=[ENU=General;
+                           ENG=General] }
+
+    { 7   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies in the Jobs Setup window that cost changes are automatically adjusted each time the Adjust Cost - Item Entries batch job is run. The adjustment process and its results are the same as when you run the Update Job Item Cost Batch Job.;
+                           ENG=Specifies in the Jobs Setup window that cost changes are automatically adjusted each time the Adjust Cost - Item Entries batch job is run. The adjustment process and its results are the same as when you run the Update Job Item Cost Batch Job.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Automatic Update Job Item Cost" }
+
+    { 5   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies whether job ledger entries are linked to job planning lines by default. Select this check box if you want to apply this setting to all new jobs that you create.;
+                           ENG=Specifies whether job ledger entries are linked to job planning lines by default. Select this check box if you want to apply this setting to all new jobs that you create.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Apply Usage Link by Default" }
+
+    { 6   ;2   ;Field     ;
+                CaptionML=[ENU=Allow Budget/Billable Lines Def;
+                           ENG=Allow Budget/Billable Lines Def];
+                ToolTipML=[ENU=Specifies whether job lines can be of type Both Budget and Billable by default. Select this check box if you want to apply this setting to all new jobs that you create.;
+                           ENG=Specifies whether job lines can be of type Both Budget and Billable by default. Select this check box if you want to apply this setting to all new jobs that you create.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Allow Sched/Contract Lines Def";
+                Visible=JobSimplificationAvailable }
+
+    { 9   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the default method to be used for calculating work in process (WIP). It is applied whenever you create a new job, but you can modify the value on the job card.;
+                           ENG=Specifies the default method to be used for calculating work in process (WIP). It is applied whenever you create a new job, but you can modify the value on the job card.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Default WIP Method" }
+
+    { 4   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies how the default WIP method is to be applied when posting Work in Process (WIP) to the general ledger. By default, it is applied per job.;
+                           ENG=Specifies how the default WIP method is to be applied when posting Work in Process (WIP) to the general ledger. By default, it is applied per job.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Default WIP Posting Method" }
+
+    { 2   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the default posting group to be applied when you create a new job. This group is used whenever you create a job, but you can modify the value on the job card.;
+                           ENG=Specifies the default posting group to be applied when you create a new job. This group is used whenever you create a job, but you can modify the value on the job card.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Default Job Posting Group" }
+
+    { 8   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the position of your company logo on business letters and documents.;
+                           ENG=Specifies the position of your company logo on business letters and documents.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Logo Position on Documents";
+                Visible=JobSimplificationAvailable }
+
+    { 1904569201;1;Group  ;
+                CaptionML=[ENU=Numbering;
+                           ENG=Numbering] }
+
+    { 3   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the code for the number series that will be used to assign numbers to jobs. To see the number series that have been set up in the No. Series table, click the drop-down arrow in the field.;
+                           ENG=Specifies the code for the number series that will be used to assign numbers to jobs. To see the number series that have been set up in the No. Series table, click the drop-down arrow in the field.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Job Nos." }
+
+    { 10  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the code for the number series that will be used to assign numbers to job WIP documents. To see the number series that have been set up in the No. Series table, click the drop-down arrow in the field.;
+                           ENG=Specifies the code for the number series that will be used to assign numbers to job WIP documents. To see the number series that have been set up in the No. Series table, click the drop-down arrow in the field.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Job WIP Nos." }
+
+    { 1900000007;0;Container;
+                ContainerType=FactBoxArea }
+
+    { 1900383207;1;Part   ;
+                Visible=FALSE;
+                PartType=System;
+                SystemPartID=RecordLinks }
+
+    { 1905767507;1;Part   ;
+                Visible=FALSE;
+                PartType=System;
+                SystemPartID=Notes }
+
+  }
+  CODE
+  {
+    VAR
+      JobSimplificationAvailable@1000 : Boolean;
+
+    BEGIN
+    END.
+  }
+}
+

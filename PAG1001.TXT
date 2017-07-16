@@ -1,0 +1,480 @@
+OBJECT Page 1001 Job Task Lines Subform
+{
+  OBJECT-PROPERTIES
+  {
+    Date=30/03/17;
+    Time=12:00:00;
+    Version List=NAVW110.00.00.16177;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Job Task Lines Subform;
+               ENG=Job Task Lines Subform];
+    SaveValues=Yes;
+    SourceTable=Table1001;
+    DataCaptionFields=Job No.;
+    PageType=ListPart;
+    OnAfterGetRecord=BEGIN
+                       DescriptionIndent := Indentation;
+                       StyleIsStrong := "Job Task Type" <> "Job Task Type"::Posting;
+                     END;
+
+    OnNewRecord=BEGIN
+                  ClearTempDim;
+                END;
+
+    ActionList=ACTIONS
+    {
+      { 1900000004;0 ;ActionContainer;
+                      ActionContainerType=ActionItems }
+      { 6       ;1   ;ActionGroup;
+                      CaptionML=[ENU=Line;
+                                 ENG=Line] }
+      { 14      ;2   ;ActionGroup;
+                      CaptionML=[ENU=&Job;
+                                 ENG=&Job];
+                      Image=Job }
+      { 7       ;3   ;Action    ;
+                      Name=JobPlanningLines;
+                      ShortCutKey=Shift+Ctrl+P;
+                      CaptionML=[ENU=Job &Planning Lines;
+                                 ENG=Job &Planning Lines];
+                      ToolTipML=[ENU=View all planning lines for the job. You use this window to plan what items, resources, and general ledger expenses that you expect to use on a job (budget) or you can specify what you actually agreed with your customer that he should pay for the job (billable).;
+                                 ENG=View all planning lines for the job. You use this window to plan what items, resources, and general ledger expenses that you expect to use on a job (budget) or you can specify what you actually agreed with your customer that he should pay for the job (billable).];
+                      ApplicationArea=#Jobs;
+                      Image=JobLines;
+                      Scope=Repeater;
+                      OnAction=VAR
+                                 JobPlanningLine@1001 : Record 1003;
+                                 JobPlanningLines@1000 : Page 1007;
+                               BEGIN
+                                 TESTFIELD("Job No.");
+                                 JobPlanningLine.FILTERGROUP(2);
+                                 JobPlanningLine.SETRANGE("Job No.","Job No.");
+                                 JobPlanningLine.SETRANGE("Job Task No.","Job Task No.");
+                                 JobPlanningLine.FILTERGROUP(0);
+                                 JobPlanningLines.SETTABLEVIEW(JobPlanningLine);
+                                 JobPlanningLines.SetJobNo("Job No.");
+                                 JobPlanningLines.EDITABLE := TRUE;
+                                 JobPlanningLines.RUN;
+                               END;
+                                }
+      { 31      ;2   ;ActionGroup;
+                      CaptionML=[ENU=New Documents;
+                                 ENG=New Documents];
+                      Image=Invoice }
+      { 15      ;3   ;Action    ;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=Create &Sales Invoice;
+                                 ENG=Create &Sales Invoice];
+                      ToolTipML=[ENU=Use a batch job to help you create sales invoices for the involved job tasks.;
+                                 ENG=Use a batch job to help you create sales invoices for the involved job tasks.];
+                      ApplicationArea=#Jobs;
+                      Image=JobSalesInvoice;
+                      OnAction=VAR
+                                 Job@1000 : Record 167;
+                                 JobTask@1002 : Record 1001;
+                               BEGIN
+                                 TESTFIELD("Job No.");
+                                 Job.GET("Job No.");
+                                 IF Job.Blocked = Job.Blocked::All THEN
+                                   Job.TestBlocked;
+
+                                 JobTask.SETRANGE("Job No.",Job."No.");
+                                 IF "Job Task No." <> '' THEN
+                                   JobTask.SETRANGE("Job Task No.","Job Task No.");
+
+                                 REPORT.RUNMODAL(REPORT::"Job Create Sales Invoice",TRUE,FALSE,JobTask);
+                               END;
+                                }
+      { 4       ;2   ;ActionGroup;
+                      CaptionML=[ENU=F&unctions;
+                                 ENG=F&unctions];
+                      Image=Action }
+      { 17      ;3   ;Action    ;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=Split &Planning Lines;
+                                 ENG=Split &Planning Lines];
+                      ToolTipML=[ENU=Split planning lines of type Budget and Billable into two separate planning lines: Budget and Billable.;
+                                 ENG=Split planning lines of type Budget and Billable into two separate planning lines: Budget and Billable.];
+                      ApplicationArea=#Jobs;
+                      Promoted=Yes;
+                      Image=Splitlines;
+                      PromotedCategory=Process;
+                      OnAction=VAR
+                                 Job@1000 : Record 167;
+                                 JobTask@1002 : Record 1001;
+                               BEGIN
+                                 TESTFIELD("Job No.");
+                                 Job.GET("Job No.");
+                                 IF Job.Blocked = Job.Blocked::All THEN
+                                   Job.TestBlocked;
+
+                                 TESTFIELD("Job Task No.");
+                                 JobTask.SETRANGE("Job No.",Job."No.");
+                                 JobTask.SETRANGE("Job Task No.","Job Task No.");
+
+                                 REPORT.RUNMODAL(REPORT::"Job Split Planning Line",TRUE,FALSE,JobTask);
+                               END;
+                                }
+      { 22      ;3   ;Action    ;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=Change &Dates;
+                                 ENG=Change &Dates];
+                      ToolTipML=[ENU=Use a batch job to help you move planning lines on a job from one date interval to another.;
+                                 ENG=Use a batch job to help you move planning lines on a job from one date interval to another.];
+                      ApplicationArea=#Jobs;
+                      Image=ChangeDate;
+                      OnAction=VAR
+                                 Job@1000 : Record 167;
+                                 JobTask@1002 : Record 1001;
+                               BEGIN
+                                 TESTFIELD("Job No.");
+                                 Job.GET("Job No.");
+                                 IF Job.Blocked = Job.Blocked::All THEN
+                                   Job.TestBlocked;
+
+                                 JobTask.SETRANGE("Job No.",Job."No.");
+                                 IF "Job Task No." <> '' THEN
+                                   JobTask.SETRANGE("Job Task No.","Job Task No.");
+
+                                 REPORT.RUNMODAL(REPORT::"Change Job Dates",TRUE,FALSE,JobTask);
+                               END;
+                                }
+      { 13      ;3   ;Action    ;
+                      Name=<Action7>;
+                      CaptionML=[ENU=I&ndent Job Tasks;
+                                 ENG=I&ndent Job Tasks];
+                      ToolTipML=[ENU=Move the selected lines in one position to show that the tasks are subcategories of other tasks. Job tasks that are totaled are the ones that lie between one pair of corresponding Begin-Total and End-Total job tasks.;
+                                 ENG=Move the selected lines in one position to show that the tasks are subcategories of other tasks. Job tasks that are totalled are the ones that lie between one pair of corresponding Begin-Total and End-Total job tasks.];
+                      ApplicationArea=#Jobs;
+                      RunObject=Codeunit 1003;
+                      Image=Indent }
+      { 23      ;3   ;ActionGroup;
+                      CaptionML=[ENU=&Copy;
+                                 ENG=&Copy];
+                      ActionContainerType=NewDocumentItems;
+                      Image=Copy }
+      { 32      ;4   ;Action    ;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=Copy Job Planning Lines &from...;
+                                 ENG=Copy Job Planning Lines &from...];
+                      ToolTipML=[ENU=Use a batch job to help you copy planning lines from one job task to another. You can copy from a job task within the job you are working with or from a job task linked to a different job.;
+                                 ENG=Use a batch job to help you copy planning lines from one job task to another. You can copy from a job task within the job you are working with or from a job task linked to a different job.];
+                      ApplicationArea=#Jobs;
+                      Promoted=Yes;
+                      Image=CopyToTask;
+                      PromotedCategory=Process;
+                      OnAction=VAR
+                                 CopyJobPlanningLines@1000 : Page 1042;
+                               BEGIN
+                                 TESTFIELD("Job Task Type","Job Task Type"::Posting);
+                                 CopyJobPlanningLines.SetToJobTask(Rec);
+                                 CopyJobPlanningLines.RUNMODAL;
+                               END;
+                                }
+      { 33      ;4   ;Action    ;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=Copy Job Planning Lines &to...;
+                                 ENG=Copy Job Planning Lines &to...];
+                      ToolTipML=[ENU=Use a batch job to help you copy planning lines from one job task to another. You can copy from a job task within the job you are working with or from a job task linked to a different job.;
+                                 ENG=Use a batch job to help you copy planning lines from one job task to another. You can copy from a job task within the job you are working with or from a job task linked to a different job.];
+                      ApplicationArea=#Jobs;
+                      Promoted=Yes;
+                      Image=CopyFromTask;
+                      PromotedCategory=Process;
+                      OnAction=VAR
+                                 CopyJobPlanningLines@1000 : Page 1042;
+                               BEGIN
+                                 TESTFIELD("Job Task Type","Job Task Type"::Posting);
+                                 CopyJobPlanningLines.SetFromJobTask(Rec);
+                                 CopyJobPlanningLines.RUNMODAL;
+                               END;
+                                }
+      { 25      ;3   ;ActionGroup;
+                      Name=<Action13>;
+                      CaptionML=[ENU=W&IP;
+                                 ENG=W&IP];
+                      ActionContainerType=NewDocumentItems;
+                      Image=WIP }
+      { 3       ;4   ;Action    ;
+                      Name=<Action48>;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=&Calculate WIP;
+                                 ENG=&Calculate WIP];
+                      ToolTipML=[ENU=Run the Job Calculate WIP batch job.;
+                                 ENG=Run the Job Calculate WIP batch job.];
+                      ApplicationArea=#Jobs;
+                      Image=CalculateWIP;
+                      OnAction=VAR
+                                 Job@1002 : Record 167;
+                               BEGIN
+                                 TESTFIELD("Job No.");
+                                 Job.GET("Job No.");
+                                 Job.SETRANGE("No.",Job."No.");
+                                 REPORT.RUNMODAL(REPORT::"Job Calculate WIP",TRUE,FALSE,Job);
+                               END;
+                                }
+      { 11      ;4   ;Action    ;
+                      Name=<Action49>;
+                      ShortCutKey=F9;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=&Post WIP to G/L;
+                                 ENG=&Post WIP to G/L];
+                      ToolTipML=[ENU=Run the Job Post WIP to G/L batch job.;
+                                 ENG=Run the Job Post WIP to G/L batch job.];
+                      ApplicationArea=#Jobs;
+                      Image=PostOrder;
+                      OnAction=VAR
+                                 Job@1001 : Record 167;
+                               BEGIN
+                                 TESTFIELD("Job No.");
+                                 Job.GET("Job No.");
+                                 Job.SETRANGE("No.",Job."No.");
+                                 REPORT.RUNMODAL(REPORT::"Job Post WIP to G/L",TRUE,FALSE,Job);
+                               END;
+                                }
+    }
+  }
+  CONTROLS
+  {
+    { 1900000001;0;Container;
+                ContainerType=ContentArea }
+
+    { 1   ;1   ;Group     ;
+                IndentationColumnName=DescriptionIndent;
+                IndentationControls=Description;
+                GroupType=Repeater }
+
+    { 24  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number of the job that the job task is related to.;
+                           ENG=Specifies the number of the job that the job task is related to.];
+                ApplicationArea=#Basic,#Suite,#Jobs;
+                SourceExpr="Job No.";
+                Visible=FALSE;
+                Style=Strong;
+                StyleExpr=StyleIsStrong }
+
+    { 26  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number of the job task you are setting up. You can enter a maximum of 20 characters, both numbers and letters.;
+                           ENG=Specifies the number of the job task you are setting up. You can enter a maximum of 20 characters, both numbers and letters.];
+                ApplicationArea=#Basic,#Suite,#Jobs;
+                SourceExpr="Job Task No.";
+                Style=Strong;
+                StyleExpr=StyleIsStrong }
+
+    { 28  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies a description of the job task. You can enter anything that is meaningful in describing the task. The description is copied and used in descriptions on the job planning line.;
+                           ENG=Specifies a description of the job task. You can enter anything that is meaningful in describing the task. The description is copied and used in descriptions on the job planning line.];
+                ApplicationArea=#Basic,#Suite,#Jobs;
+                SourceExpr=Description;
+                Style=Strong;
+                StyleExpr=StyleIsStrong }
+
+    { 30  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the purpose of the account. Newly created accounts are automatically assigned the Posting account type, but you can change this. Choose the field to select one of the following five options:;
+                           ENG=Specifies the purpose of the account. Newly created accounts are automatically assigned the Posting account type, but you can change this. Choose the field to select one of the following five options:];
+                ApplicationArea=#Basic,#Suite,#Jobs;
+                SourceExpr="Job Task Type" }
+
+    { 34  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies an interval or a list of job task numbers.;
+                           ENG=Specifies an interval or a list of job task numbers.];
+                ApplicationArea=#Suite;
+                SourceExpr=Totaling;
+                Visible=FALSE }
+
+    { 36  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the job posting group of the task.;
+                           ENG=Specifies the job posting group of the task.];
+                ApplicationArea=#Suite;
+                SourceExpr="Job Posting Group";
+                Visible=FALSE }
+
+    { 9   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the job tasks you want to group together when calculating Work In Process (WIP) and Recognition.;
+                           ENG=Specifies the job tasks you want to group together when calculating Work In Process (WIP) and Recognition.];
+                ApplicationArea=#Suite;
+                SourceExpr="WIP-Total";
+                Visible=FALSE }
+
+    { 2   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the name of the Work in Process calculation method that is associated with a job. The value in this field comes from the WIP method specified on the job card.;
+                           ENG=Specifies the name of the Work in Process calculation method that is associated with a job. The value in this field comes from the WIP method specified on the job card.];
+                ApplicationArea=#Suite;
+                SourceExpr="WIP Method";
+                Visible=FALSE }
+
+    { 27  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the start date for the job task. The date is based on the date on the related job planning line.;
+                           ENG=Specifies the start date for the job task. The date is based on the date on the related job planning line.];
+                ApplicationArea=#Basic,#Suite,#Jobs;
+                SourceExpr="Start Date" }
+
+    { 29  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the end date for the job task. The date is based on the date on the related job planning line.;
+                           ENG=Specifies the end date for the job task. The date is based on the date on the related job planning line.];
+                ApplicationArea=#Basic,#Suite,#Jobs;
+                SourceExpr="End Date" }
+
+    { 40  ;2   ;Field     ;
+                CaptionML=[ENU=Budget (Total Cost);
+                           ENG=Budget (Total Cost)];
+                ToolTipML=[ENU=Specifies, in the local currency, the total budgeted cost for the job task during the time period in the Planning Date Filter field.;
+                           ENG=Specifies, in the local currency, the total budgeted cost for the job task during the time period in the Planning Date Filter field.];
+                ApplicationArea=#Basic,#Suite,#Jobs;
+                SourceExpr="Schedule (Total Cost)" }
+
+    { 42  ;2   ;Field     ;
+                CaptionML=[ENU=Budget (Total Price);
+                           ENG=Budget (Total Price)];
+                ToolTipML=[ENU=Specifies, in local currency, the total budgeted price for the job task during the time period in the Planning Date Filter field.;
+                           ENG=Specifies, in local currency, the total budgeted price for the job task during the time period in the Planning Date Filter field.];
+                ApplicationArea=#Suite;
+                SourceExpr="Schedule (Total Price)";
+                Visible=FALSE }
+
+    { 44  ;2   ;Field     ;
+                CaptionML=[ENU=Actual (Total Cost);
+                           ENG=Actual (Total Cost)];
+                ToolTipML=[ENU=Specifies, in local currency, the total cost of the usage of items, resources and general ledger expenses posted on the job task during the time period in the Posting Date Filter field.;
+                           ENG=Specifies, in local currency, the total cost of the usage of items, resources and general ledger expenses posted on the job task during the time period in the Posting Date Filter field.];
+                ApplicationArea=#Basic,#Suite,#Jobs;
+                SourceExpr="Usage (Total Cost)" }
+
+    { 8   ;2   ;Field     ;
+                CaptionML=[ENU=Actual (Total Price);
+                           ENG=Actual (Total Price)];
+                ToolTipML=[ENU=Specifies, in the local currency, the total price of the usage of items, resources and general ledger expenses posted on the job task during the time period in the Posting Date Filter field.;
+                           ENG=Specifies, in the local currency, the total price of the usage of items, resources and general ledger expenses posted on the job task during the time period in the Posting Date Filter field.];
+                ApplicationArea=#Suite;
+                SourceExpr="Usage (Total Price)";
+                Visible=FALSE }
+
+    { 12  ;2   ;Field     ;
+                CaptionML=[ENU=Billable (Total Cost);
+                           ENG=Billable (Total Cost)];
+                ToolTipML=[ENU=Specifies, in local currency, the total billable cost for the job task during the time period in the Planning Date Filter field.;
+                           ENG=Specifies, in local currency, the total billable cost for the job task during the time period in the Planning Date Filter field.];
+                ApplicationArea=#Suite;
+                SourceExpr="Contract (Total Cost)";
+                Visible=FALSE }
+
+    { 47  ;2   ;Field     ;
+                CaptionML=[ENU=Billable (Total Price);
+                           ENG=Billable (Total Price)];
+                ToolTipML=[ENU=Specifies, in the local currency, the total billable price for the job task during the time period in the Planning Date Filter field.;
+                           ENG=Specifies, in the local currency, the total billable price for the job task during the time period in the Planning Date Filter field.];
+                ApplicationArea=#Basic,#Suite,#Jobs;
+                SourceExpr="Contract (Total Price)" }
+
+    { 37  ;2   ;Field     ;
+                CaptionML=[ENU=Billable (Invoiced Cost);
+                           ENG=Billable (Invoiced Cost)];
+                ToolTipML=[ENU=Specifies, in the local currency, the total billable cost for the job task that has been invoiced during the time period in the Posting Date Filter field.;
+                           ENG=Specifies, in the local currency, the total billable cost for the job task that has been invoiced during the time period in the Posting Date Filter field.];
+                ApplicationArea=#Suite;
+                SourceExpr="Contract (Invoiced Cost)";
+                Visible=FALSE }
+
+    { 51  ;2   ;Field     ;
+                CaptionML=[ENU=Billable (Invoiced Price);
+                           ENG=Billable (Invoiced Price)];
+                ToolTipML=[ENU=Specifies, in the local currency, the total billable price for the job task that has been invoiced during the time period in the Posting Date Filter field.;
+                           ENG=Specifies, in the local currency, the total billable price for the job task that has been invoiced during the time period in the Posting Date Filter field.];
+                ApplicationArea=#Basic,#Suite,#Jobs;
+                SourceExpr="Contract (Invoiced Price)" }
+
+    { 5   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the remaining total cost (LCY) as the sum of costs from job planning lines associated with the job task. The calculation occurs when you have specified that there is a usage link between the job ledger and the job planning lines.;
+                           ENG=Specifies the remaining total cost (LCY) as the sum of costs from job planning lines associated with the job task. The calculation occurs when you have specified that there is a usage link between the job ledger and the job planning lines.];
+                ApplicationArea=#Suite;
+                SourceExpr="Remaining (Total Cost)";
+                Visible=FALSE }
+
+    { 71  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the remaining total price (LCY) as the sum of prices from job planning lines associated with the job task. The calculation occurs when you have specified that there is a usage link between the job ledger and the job planning lines.;
+                           ENG=Specifies the remaining total price (LCY) as the sum of prices from job planning lines associated with the job task. The calculation occurs when you have specified that there is a usage link between the job ledger and the job planning lines.];
+                ApplicationArea=#Suite;
+                SourceExpr="Remaining (Total Price)";
+                Visible=FALSE }
+
+    { 73  ;2   ;Field     ;
+                Name=EAC (Total Cost);
+                CaptionML=[ENU=EAC (Total Cost);
+                           ENG=EAC (Total Cost)];
+                ToolTipML=[ENU=Specifies the estimate at completion (EAC) total cost for a job task line. If the Apply Usage Link check box on the job is selected, then the EAC (Total Cost) field is calculated as follows:;
+                           ENG=Specifies the estimate at completion (EAC) total cost for a job task line. If the Apply Usage Link check box on the job is selected, then the EAC (Total Cost) field is calculated as follows:];
+                ApplicationArea=#Suite;
+                SourceExpr=CalcEACTotalCost;
+                Visible=FALSE }
+
+    { 75  ;2   ;Field     ;
+                Name=EAC (Total Price);
+                CaptionML=[ENU=EAC (Total Price);
+                           ENG=EAC (Total Price)];
+                ToolTipML=[ENU=Specifies the estimate at completion (EAC) total price for a job task line. If the Apply Usage Link check box on the job is selected, then the EAC (Total Price) field is calculated as follows:;
+                           ENG=Specifies the estimate at completion (EAC) total price for a job task line. If the Apply Usage Link check box on the job is selected, then the EAC (Total Price) field is calculated as follows:];
+                ApplicationArea=#Suite;
+                SourceExpr=CalcEACTotalPrice;
+                Visible=FALSE }
+
+    { 67  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the dimension value code that the job task is linked to. You cannot change the code because the entry has been posted.;
+                           ENG=Specifies the dimension value code that the job task is linked to. You cannot change the code because the entry has been posted.];
+                ApplicationArea=#Suite;
+                SourceExpr="Global Dimension 1 Code";
+                Visible=FALSE }
+
+    { 69  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the dimension value code that the job task is linked to. You cannot change the code because the entry has been posted.;
+                           ENG=Specifies the dimension value code that the job task is linked to. You cannot change the code because the entry has been posted.];
+                ApplicationArea=#Suite;
+                SourceExpr="Global Dimension 2 Code";
+                Visible=FALSE }
+
+    { 1000;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the sum of outstanding orders, in local currency, for this job task. The value of the Outstanding Amount (LCY) field is used for entries in the Purchase Line table of document type Order to calculate and update the contents of this field.;
+                           ENG=Specifies the sum of outstanding orders, in local currency, for this job task. The value of the Outstanding Amount (LCY) field is used for entries in the Purchase Line table of document type Order to calculate and update the contents of this field.];
+                ApplicationArea=#Suite;
+                SourceExpr="Outstanding Orders";
+                Visible=FALSE;
+                Editable=FALSE;
+                OnDrillDown=VAR
+                              PurchLine@1000 : Record 39;
+                            BEGIN
+                              JobTaskLines.SetPurchLineFilters(PurchLine);
+                              PurchLine.SETFILTER("Outstanding Amount (LCY)",'<> 0');
+                              PAGE.RUNMODAL(PAGE::"Purchase Lines",PurchLine);
+                            END;
+                             }
+
+    { 1002;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the sum, in the local currency, for items that you have received but have not yet been invoiced. The value in the Amt. Rcd. Not Invoiced (LCY) field is used for entries in the Purchase Line table of document type Order to calculate and update the contents of this field.;
+                           ENG=Specifies the sum, in the local currency, for items that you have received but have not yet been invoiced. The value in the Amt. Rcd. Not Invoiced (LCY) field is used for entries in the Purchase Line table of document type Order to calculate and update the contents of this field.];
+                ApplicationArea=#Suite;
+                SourceExpr="Amt. Rcd. Not Invoiced";
+                Visible=FALSE;
+                Editable=FALSE;
+                OnDrillDown=VAR
+                              PurchLine@1000 : Record 39;
+                            BEGIN
+                              JobTaskLines.SetPurchLineFilters(PurchLine);
+                              PurchLine.SETFILTER("Amt. Rcd. Not Invoiced (LCY)",'<> 0');
+                              PAGE.RUNMODAL(PAGE::"Purchase Lines",PurchLine);
+                            END;
+                             }
+
+  }
+  CODE
+  {
+    VAR
+      JobTaskLines@1002 : Page 1002;
+      DescriptionIndent@1001 : Integer INDATASET;
+      StyleIsStrong@1000 : Boolean INDATASET;
+
+    BEGIN
+    END.
+  }
+}
+

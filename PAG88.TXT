@@ -1,0 +1,897 @@
+OBJECT Page 88 Job Card
+{
+  OBJECT-PROPERTIES
+  {
+    Date=24/11/16;
+    Time=12:00:00;
+    Version List=NAVW110.00.00.14199,NAVGB10.00.00.14199;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Job Card;
+               ENG=Job Card];
+    SourceTable=Table167;
+    PageType=Card;
+    RefreshOnActivate=Yes;
+    PromotedActionCategoriesML=[ENU=New,Process,Report,Prices;
+                                ENG=New,Process,Report,Prices];
+    OnInit=BEGIN
+             CurrencyCodeEditable := TRUE;
+             InvoiceCurrencyCodeEditable := TRUE;
+             JobSimplificationAvailable := IsJobSimplificationAvailable;
+           END;
+
+    OnAfterGetRecord=BEGIN
+                       CurrencyCheck;
+                     END;
+
+    ActionList=ACTIONS
+    {
+      { 1900000003;0 ;ActionContainer;
+                      ActionContainerType=RelatedInformation }
+      { 58      ;1   ;ActionGroup;
+                      CaptionML=[ENU=&Job;
+                                 ENG=&Job];
+                      Image=Job }
+      { 88      ;2   ;Action    ;
+                      Name=JobPlanningLines;
+                      ShortCutKey=Shift+Ctrl+P;
+                      CaptionML=[ENU=Job &Planning Lines;
+                                 ENG=Job &Planning Lines];
+                      ToolTipML=[ENU=View all planning lines for the job. You use this window to plan what items, resources, and general ledger expenses that you expect to use on a job (Budget) or you can specify what you actually agreed with your customer that he should pay for the job (Billable).;
+                                 ENG=View all planning lines for the job. You use this window to plan what items, resources, and general ledger expenses that you expect to use on a job (Budget) or you can specify what you actually agreed with your customer that he should pay for the job (Billable).];
+                      ApplicationArea=#Jobs;
+                      Image=JobLines;
+                      OnAction=VAR
+                                 JobPlanningLine@1001 : Record 1003;
+                                 JobPlanningLines@1000 : Page 1007;
+                               BEGIN
+                                 TESTFIELD("No.");
+                                 JobPlanningLine.FILTERGROUP(2);
+                                 JobPlanningLine.SETRANGE("Job No.","No.");
+                                 JobPlanningLine.FILTERGROUP(0);
+                                 JobPlanningLines.SetJobTaskNoVisible(TRUE);
+                                 JobPlanningLines.SETTABLEVIEW(JobPlanningLine);
+                                 JobPlanningLines.EDITABLE := TRUE;
+                                 JobPlanningLines.RUN;
+                               END;
+                                }
+      { 84      ;2   ;Action    ;
+                      ShortCutKey=Shift+Ctrl+D;
+                      CaptionML=[ENU=&Dimensions;
+                                 ENG=&Dimensions];
+                      ToolTipML=[ENU=View this job's default dimensions.;
+                                 ENG=View this job's default dimensions.];
+                      ApplicationArea=#Jobs;
+                      RunObject=Page 540;
+                      RunPageLink=Table ID=CONST(167),
+                                  No.=FIELD(No.);
+                      Image=Dimensions }
+      { 61      ;2   ;Action    ;
+                      ShortCutKey=F7;
+                      CaptionML=[ENU=&Statistics;
+                                 ENG=&Statistics];
+                      ToolTipML=[ENU=View this job's statistics.;
+                                 ENG=View this job's statistics.];
+                      ApplicationArea=#Jobs;
+                      RunObject=Page 1025;
+                      RunPageLink=No.=FIELD(No.);
+                      Promoted=Yes;
+                      Image=Statistics;
+                      PromotedCategory=Process }
+      { 64      ;2   ;Separator  }
+      { 62      ;2   ;Action    ;
+                      CaptionML=[ENU=Co&mments;
+                                 ENG=Co&mments];
+                      ToolTipML=[ENU=View the comment sheet for this job.;
+                                 ENG=View the comment sheet for this job.];
+                      RunObject=Page 124;
+                      RunPageLink=Table Name=CONST(Job),
+                                  No.=FIELD(No.);
+                      Image=ViewComments }
+      { 66      ;2   ;Action    ;
+                      CaptionML=[ENU=&Online Map;
+                                 ENG=&Online Map];
+                      ToolTipML=[ENU=View online map for addresses assigned to this job.;
+                                 ENG=View online map for addresses assigned to this job.];
+                      ApplicationArea=#Jobs;
+                      Image=Map;
+                      OnAction=BEGIN
+                                 DisplayMap;
+                               END;
+                                }
+      { 81      ;1   ;ActionGroup;
+                      CaptionML=[ENU=W&IP;
+                                 ENG=W&IP];
+                      Image=WIP }
+      { 85      ;2   ;Action    ;
+                      CaptionML=[ENU=&WIP Entries;
+                                 ENG=&WIP Entries];
+                      ToolTipML=[ENU=View entries for the job that are posted as work in process.;
+                                 ENG=View entries for the job that are posted as work in process.];
+                      ApplicationArea=#Jobs;
+                      RunObject=Page 1008;
+                      RunPageView=SORTING(Job No.,Job Posting Group,WIP Posting Date)
+                                  ORDER(Descending);
+                      RunPageLink=Job No.=FIELD(No.);
+                      Image=WIPEntries }
+      { 86      ;2   ;Action    ;
+                      CaptionML=[ENU=WIP &G/L Entries;
+                                 ENG=WIP &G/L Entries];
+                      ToolTipML=[ENU=View the job's WIP G/L entries.;
+                                 ENG=View the job's WIP G/L entries.];
+                      ApplicationArea=#Jobs;
+                      RunObject=Page 1009;
+                      RunPageView=SORTING(Job No.)
+                                  ORDER(Descending);
+                      RunPageLink=Job No.=FIELD(No.);
+                      Image=WIPLedger }
+      { 54      ;1   ;ActionGroup;
+                      CaptionML=[ENU=&Prices;
+                                 ENG=&Prices];
+                      Image=Price }
+      { 93      ;2   ;Action    ;
+                      CaptionML=[ENU=&Resource;
+                                 ENG=&Resource];
+                      ToolTipML=[ENU=View this job's resource prices.;
+                                 ENG=View this job's resource prices.];
+                      ApplicationArea=#Suite;
+                      RunObject=Page 1011;
+                      RunPageLink=Job No.=FIELD(No.);
+                      Promoted=Yes;
+                      Image=Resource;
+                      PromotedCategory=Category4 }
+      { 94      ;2   ;Action    ;
+                      CaptionML=[ENU=&Item;
+                                 ENG=&Item];
+                      ToolTipML=[ENU=View this job's item prices.;
+                                 ENG=View this job's item prices.];
+                      ApplicationArea=#Suite;
+                      RunObject=Page 1012;
+                      RunPageLink=Job No.=FIELD(No.);
+                      Promoted=Yes;
+                      Image=Item;
+                      PromotedCategory=Category4 }
+      { 95      ;2   ;Action    ;
+                      CaptionML=[ENU=&G/L Account;
+                                 ENG=&G/L Account];
+                      ToolTipML=[ENU=View this job's G/L account prices.;
+                                 ENG=View this job's G/L account prices.];
+                      ApplicationArea=#Suite;
+                      RunObject=Page 1013;
+                      RunPageLink=Job No.=FIELD(No.);
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=JobPrice;
+                      PromotedCategory=Category4 }
+      { 53      ;1   ;ActionGroup;
+                      CaptionML=[ENU=Plan&ning;
+                                 ENG=Plan&ning];
+                      Image=Planning }
+      { 65      ;2   ;Action    ;
+                      CaptionML=[ENU=Resource &Allocated per Job;
+                                 ENG=Resource &Allocated per Job];
+                      ToolTipML=[ENU=View this job's resource allocation.;
+                                 ENG=View this job's resource allocation.];
+                      ApplicationArea=#Jobs;
+                      RunObject=Page 221;
+                      Image=ViewJob }
+      { 69      ;2   ;Action    ;
+                      CaptionML=[ENU=Res. Gr. All&ocated per Job;
+                                 ENG=Res. Gr. All&ocated per Job];
+                      ToolTipML=[ENU=View the job's resource group allocation.;
+                                 ENG=View the job's resource group allocation.];
+                      ApplicationArea=#Jobs;
+                      RunObject=Page 228;
+                      Image=ResourceGroup }
+      { 40      ;1   ;ActionGroup;
+                      CaptionML=[ENU=History;
+                                 ENG=History];
+                      Image=History }
+      { 60      ;2   ;Action    ;
+                      ShortCutKey=Ctrl+F7;
+                      CaptionML=[ENU=Ledger E&ntries;
+                                 ENG=Ledger E&ntries];
+                      ToolTipML=[ENU=View the history of transactions that have been posted for the selected record.;
+                                 ENG=View the history of transactions that have been posted for the selected record.];
+                      ApplicationArea=#Jobs;
+                      RunObject=Page 92;
+                      RunPageView=SORTING(Job No.,Job Task No.,Entry Type,Posting Date)
+                                  ORDER(Descending);
+                      RunPageLink=Job No.=FIELD(No.);
+                      Promoted=Yes;
+                      Image=JobLedger;
+                      PromotedCategory=Process }
+      { 1900000004;0 ;ActionContainer;
+                      ActionContainerType=ActionItems }
+      { 33      ;1   ;ActionGroup;
+                      CaptionML=[ENU=&Copy;
+                                 ENG=&Copy];
+                      ActionContainerType=NewDocumentItems;
+                      Image=Copy }
+      { 31      ;2   ;Action    ;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=Copy Job Tasks &from...;
+                                 ENG=Copy Job Tasks &from...];
+                      ToolTipML=[ENU=Open the Copy Job Tasks page.;
+                                 ENG=Open the Copy Job Tasks page.];
+                      ApplicationArea=#Jobs;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=CopyToTask;
+                      PromotedCategory=Process;
+                      OnAction=VAR
+                                 CopyJobTasks@1000 : Page 1041;
+                               BEGIN
+                                 CopyJobTasks.SetToJob(Rec);
+                                 CopyJobTasks.RUNMODAL;
+                               END;
+                                }
+      { 27      ;2   ;Action    ;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=Copy Job Tasks &to...;
+                                 ENG=Copy Job Tasks &to...];
+                      ToolTipML=[ENU=Open the Copy Jobs To page.;
+                                 ENG=Open the Copy Jobs To page.];
+                      ApplicationArea=#Jobs;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=CopyFromTask;
+                      PromotedCategory=Process;
+                      OnAction=VAR
+                                 CopyJobTasks@1000 : Page 1041;
+                               BEGIN
+                                 CopyJobTasks.SetFromJob(Rec);
+                                 CopyJobTasks.RUNMODAL;
+                               END;
+                                }
+      { 26      ;1   ;ActionGroup;
+                      CaptionML=[ENU=W&IP;
+                                 ENG=W&IP];
+                      Image=WIP }
+      { 25      ;2   ;Action    ;
+                      Name=<Action82>;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=&Calculate WIP;
+                                 ENG=&Calculate WIP];
+                      ToolTipML=[ENU=Run the Job Calculate WIP batch job.;
+                                 ENG=Run the Job Calculate WIP batch job.];
+                      ApplicationArea=#Jobs;
+                      Image=CalculateWIP;
+                      PromotedCategory=Process;
+                      OnAction=VAR
+                                 Job@1002 : Record 167;
+                               BEGIN
+                                 TESTFIELD("No.");
+                                 Job.COPY(Rec);
+                                 Job.SETRANGE("No.","No.");
+                                 REPORT.RUNMODAL(REPORT::"Job Calculate WIP",TRUE,FALSE,Job);
+                               END;
+                                }
+      { 24      ;2   ;Action    ;
+                      Name=<Action83>;
+                      ShortCutKey=F9;
+                      Ellipsis=Yes;
+                      CaptionML=[ENU=&Post WIP to G/L;
+                                 ENG=&Post WIP to G/L];
+                      ToolTipML=[ENU=Run the Job Post WIP to G/L batch job.;
+                                 ENG=Run the Job Post WIP to G/L batch job.];
+                      ApplicationArea=#Jobs;
+                      Image=PostOrder;
+                      PromotedCategory=Process;
+                      OnAction=VAR
+                                 Job@1001 : Record 167;
+                               BEGIN
+                                 TESTFIELD("No.");
+                                 Job.COPY(Rec);
+                                 Job.SETRANGE("No.","No.");
+                                 REPORT.RUNMODAL(REPORT::"Job Post WIP to G/L",TRUE,FALSE,Job);
+                               END;
+                                }
+      { 1900000006;0 ;ActionContainer;
+                      ActionContainerType=Reports }
+      { 1903776506;1 ;Action    ;
+                      CaptionML=[ENU=Job Actual to Budget;
+                                 ENG=Job Actual to Budget];
+                      ToolTipML=[ENU=Compare budgeted and usage amounts for selected jobs. All lines of the selected job show quantity, total cost, and line amount.;
+                                 ENG=Compare budgeted and usage amounts for selected jobs. All lines of the selected job show quantity, total cost, and line amount.];
+                      ApplicationArea=#Suite;
+                      RunObject=Report 1009;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1901542506;1 ;Action    ;
+                      CaptionML=[ENU=Job Analysis;
+                                 ENG=Job Analysis];
+                      ToolTipML=[ENU=Analyze the job, such as the budgeted prices, usage prices, and billable prices, and then compares the three sets of prices.;
+                                 ENG=Analyse the job, such as the budgeted prices, usage prices, and billable prices, and then compares the three sets of prices.];
+                      ApplicationArea=#Suite;
+                      RunObject=Report 1008;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1902943106;1 ;Action    ;
+                      CaptionML=[ENU=Job - Planning Lines;
+                                 ENG=Job - Planning Lines];
+                      ToolTipML=[ENU=View all planning lines for the job. You use this window to plan what items, resources, and general ledger expenses that you expect to use on a job (budget) or you can specify what you actually agreed with your customer that he should pay for the job (billable).;
+                                 ENG=View all planning lines for the job. You use this window to plan what items, resources, and general ledger expenses that you expect to use on a job (budget) or you can specify what you actually agreed with your customer that he should pay for the job (billable).];
+                      ApplicationArea=#Suite;
+                      RunObject=Report 1006;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1903186006;1 ;Action    ;
+                      CaptionML=[ENU=Job - Suggested Billing;
+                                 ENG=Job - Suggested Billing];
+                      ToolTipML=[ENU=View a list of all jobs, grouped by customer, how much the customer has already been invoiced, and how much remains to be invoiced, that is, the suggested billing.;
+                                 ENG=View a list of all jobs, grouped by customer, how much the customer has already been invoiced, and how much remains to be invoiced, that is, the suggested billing.];
+                      ApplicationArea=#Suite;
+                      RunObject=Report 1011;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 46      ;1   ;Action    ;
+                      Name=Report Job Quote;
+                      CaptionML=[ENU=Preview Job Quote;
+                                 ENG=Preview Job Quote];
+                      ToolTipML=[ENU=Open the Job Quote report.;
+                                 ENG=Open the Job Quote report.];
+                      ApplicationArea=#Suite;
+                      Image=Report;
+                      PromotedCategory=Report;
+                      OnAction=VAR
+                                 Job@1001 : Record 167;
+                               BEGIN
+                                 Job.SETCURRENTKEY("No.");
+                                 Job.SETFILTER("No.","No.");
+                                 REPORT.RUN(REPORT::"Job Quote",TRUE,FALSE,Job);
+                               END;
+                                }
+      { 48      ;1   ;Action    ;
+                      Name=Send Job Quote;
+                      CaptionML=[ENU=Send Job Quote;
+                                 ENG=Send Job Quote];
+                      ToolTipML=[ENU=Send the job quote to the customer. You can change the way that the document is sent in the window that appears.;
+                                 ENG=Send the job quote to the customer. You can change the way that the document is sent in the window that appears.];
+                      ApplicationArea=#Suite;
+                      Image=SendTo;
+                      PromotedCategory=Report;
+                      OnAction=BEGIN
+                                 CODEUNIT.RUN(CODEUNIT::"Jobs-Send",Rec);
+                               END;
+                                }
+    }
+  }
+  CONTROLS
+  {
+    { 1900000001;0;Container;
+                ContainerType=ContentArea }
+
+    { 1   ;1   ;Group     ;
+                CaptionML=[ENU=General;
+                           ENG=General] }
+
+    { 2   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number for the job. You can use one of the following methods to fill in the number:;
+                           ENG=Specifies the number for the job. You can use one of the following methods to fill in the number:];
+                ApplicationArea=#Jobs;
+                SourceExpr="No.";
+                OnAssistEdit=BEGIN
+                               IF AssistEdit(xRec) THEN
+                                 CurrPage.UPDATE;
+                             END;
+                              }
+
+    { 4   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies a short description of the job.;
+                           ENG=Specifies a short description of the job.];
+                ApplicationArea=#Jobs;
+                SourceExpr=Description }
+
+    { 32  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number of the customer that the job should be billed to.;
+                           ENG=Specifies the number of the customer that the job should be billed to.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Bill-to Customer No.";
+                Importance=Promoted;
+                OnValidate=BEGIN
+                             BilltoCustomerNoOnAfterValidat;
+                           END;
+
+                ShowMandatory=TRUE }
+
+    { 96  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number of the contact that the invoice will be sent to.;
+                           ENG=Specifies the number of the contact that the invoice will be sent to.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Bill-to Contact No." }
+
+    { 8   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the name of the Bill-to Customer, which you assigned to the current job, in the Bill-to Customer No. field. field.;
+                           ENG=Specifies the name of the Bill-to Customer, which you assigned to the current job, in the Bill-to Customer No. field. field.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Bill-to Name";
+                Importance=Promoted }
+
+    { 45  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the address of the Bill-to Customer, which you assigned to the current job, in the Bill-to Customer No. field. field.;
+                           ENG=Specifies the address of the Bill-to Customer, which you assigned to the current job, in the Bill-to Customer No. field. field.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Bill-to Address";
+                Importance=Additional }
+
+    { 47  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the additional address of the Bill-to Customer, which you assigned to the current job, in the Bill-to Customer No. field. field.;
+                           ENG=Specifies the additional address of the Bill-to Customer, which you assigned to the current job, in the Bill-to Customer No. field. field.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Bill-to Address 2";
+                Importance=Additional }
+
+    { 1040002;2;Field     ;
+                ApplicationArea=#Jobs;
+                SourceExpr="Bill-to City" }
+
+    { 1040001;2;Field     ;
+                CaptionML=[ENU=Bill-to County;
+                           ENG=Bill-to County];
+                ApplicationArea=#Jobs;
+                SourceExpr="Bill-to County" }
+
+    { 1040006;2;Field     ;
+                CaptionML=[ENU=Bill-to Country/Region Code;
+                           ENG=Bill-to Country/Region Code];
+                ApplicationArea=#Jobs;
+                SourceExpr="Bill-to Country/Region Code" }
+
+    { 51  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the name of the contact person that you entered in the Bill-to Contact No. field. field.;
+                           ENG=Specifies the name of the contact person that you entered in the Bill-to Contact No. field. field.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Bill-to Contact";
+                Importance=Additional }
+
+    { 1040000;2;Field     ;
+                ApplicationArea=#Jobs;
+                SourceExpr="Bill-to Post Code" }
+
+    { 10  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the additional name for the job. The field is used for searching purposes.;
+                           ENG=Specifies the additional name for the job. The field is used for searching purposes.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Search Description";
+                Importance=Additional }
+
+    { 6   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the name of the person responsible for the job. You can select a name from the list of resources available in the Resource List window. The name is copied from the No. field in the Resource table. You can choose the field to see a list of resources.;
+                           ENG=Specifies the name of the person responsible for the job. You can select a name from the list of resources available in the Resource List window. The name is copied from the No. field in the Resource table. You can choose the field to see a list of resources.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Person Responsible";
+                Importance=Promoted }
+
+    { 12  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the blocking status for actions related to the job.;
+                           ENG=Specifies the blocking status for actions related to the job.];
+                ApplicationArea=#Jobs;
+                SourceExpr=Blocked }
+
+    { 30  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies when the job card was last modified.;
+                           ENG=Specifies when the job card was last modified.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Last Date Modified" }
+
+    { 42  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the person assigned as the manager for this job.;
+                           ENG=Specifies the person assigned as the manager for this job.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Project Manager";
+                Visible=JobSimplificationAvailable }
+
+    { 50  ;1   ;Part      ;
+                Name=JobTaskLines;
+                CaptionML=[ENU=Tasks;
+                           ENG=Tasks];
+                ApplicationArea=#Jobs;
+                SubPageView=SORTING(Job Task No.)
+                            ORDER(Ascending);
+                SubPageLink=Job No.=FIELD(No.);
+                PagePartID=Page1001;
+                PartType=Page }
+
+    { 1904784501;1;Group  ;
+                CaptionML=[ENU=Posting;
+                           ENG=Posting] }
+
+    { 34  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies a status for the current job. You can change the status for the job as it progresses. Final calculations can be made on completed jobs.;
+                           ENG=Specifies a status for the current job. You can change the status for the job as it progresses. Final calculations can be made on completed jobs.];
+                ApplicationArea=#Jobs;
+                SourceExpr=Status;
+                Importance=Promoted }
+
+    { 38  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies a job posting group code to a job. To see the available codes, choose the field.;
+                           ENG=Specifies a job posting group code to a job. To see the available codes, choose the field.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Job Posting Group" }
+
+    { 106 ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the name of the work in process (WIP) calculation method that is associated with a job.;
+                           ENG=Specifies the name of the work in process (WIP) calculation method that is associated with a job.];
+                ApplicationArea=#Jobs;
+                SourceExpr="WIP Method";
+                Importance=Additional }
+
+    { 3   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies whether WIP Posting Method is per job or per job ledger entry. When you select Per Job, Microsoft Dynamics NAV uses total WIP costs and sales to calculate WIP. When you select Per Job Ledger Entry, Microsoft Dynamics NAV uses the accumulated values for WIP costs and sales.;
+                           ENG=Specifies whether WIP Posting Method is per job or per job ledger entry. When you select Per Job, Microsoft Dynamics NAV uses total WIP costs and sales to calculate WIP. When you select Per Job Ledger Entry, Microsoft Dynamics NAV uses the accumulated values for WIP costs and sales.];
+                ApplicationArea=#Jobs;
+                SourceExpr="WIP Posting Method";
+                Importance=Additional }
+
+    { 89  ;2   ;Field     ;
+                CaptionML=[ENU=Allow Budget/Billable Lines;
+                           ENG=Allow Budget/Billable Lines];
+                ToolTipML=[ENU=Specifies if you can add planning lines of type Both Budget and Billable to the job.;
+                           ENG=Specifies if you can add planning lines of type Both Budget and Billable to the job.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Allow Schedule/Contract Lines";
+                Importance=Additional }
+
+    { 70  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies whether usage entries, from the job journal or purchase line, for example, are linked to job planning lines. Select this check box if you want to be able to track the quantities and amounts of the remaining work needed to complete a job and to create a relationship between demand planning, usage, and sales. On a job card, you can select this check box if there are no existing job planning lines that include type Budget that have been posted. The usage link only applies to job planning lines that include type Budget.;
+                           ENG=Specifies whether usage entries, from the job journal or purchase line, for example, are linked to job planning lines. Select this check box if you want to be able to track the quantities and amounts of the remaining work needed to complete a job and to create a relationship between demand planning, usage, and sales. On a job card, you can select this check box if there are no existing job planning lines that include type Budget that have been posted. The usage link only applies to job planning lines that include type Budget.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Apply Usage Link";
+                Importance=Additional }
+
+    { 36  ;2   ;Field     ;
+                Name=% Completed;
+                CaptionML=[ENU=% Completed;
+                           ENG=% Completed];
+                ToolTipML=[ENU=Specifies the percentage of the job's estimated resource usage that has been posted as used.;
+                           ENG=Specifies the percentage of the job's estimated resource usage that has been posted as used.];
+                ApplicationArea=#Jobs;
+                SourceExpr=PercentCompleted;
+                Importance=Promoted;
+                Editable=FALSE }
+
+    { 35  ;2   ;Field     ;
+                Name=% Invoiced;
+                CaptionML=[ENU=% Invoiced;
+                           ENG=% Invoiced];
+                ToolTipML=[ENU=Specifies the percentage of the job's invoice value that has been posted as invoiced.;
+                           ENG=Specifies the percentage of the job's invoice value that has been posted as invoiced.];
+                ApplicationArea=#Jobs;
+                SourceExpr=PercentInvoiced;
+                Importance=Promoted;
+                Editable=FALSE }
+
+    { 39  ;2   ;Field     ;
+                Name=% of Overdue Planning Lines;
+                CaptionML=[ENU=% of Overdue Planning Lines;
+                           ENG=% of Overdue Planning Lines];
+                ToolTipML=[ENU=Specifies the percentage of the job's planning lines where the planned delivery date has been exceeded.;
+                           ENG=Specifies the percentage of the job's planning lines where the planned delivery date has been exceeded.];
+                ApplicationArea=#Jobs;
+                SourceExpr=PercentOverdue;
+                Importance=Additional;
+                Editable=FALSE }
+
+    { 1905744101;1;Group  ;
+                CaptionML=[ENU=Duration;
+                           ENG=Duration] }
+
+    { 20  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the date on which the job actually starts.;
+                           ENG=Specifies the date on which the job actually starts.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Starting Date";
+                Importance=Promoted }
+
+    { 22  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the date on which the job is expected to be completed.;
+                           ENG=Specifies the date on which the job is expected to be completed.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Ending Date";
+                Importance=Promoted }
+
+    { 14  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the date on which you set up the job.;
+                           ENG=Specifies the date on which you set up the job.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Creation Date" }
+
+    { 1907468901;1;Group  ;
+                CaptionML=[ENU=Foreign Trade;
+                           ENG=Foreign Trade] }
+
+    { 98  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the currency code for a job. By default, the currency code is empty. If you enter a foreign currency code, it results in the job being planned and invoiced in that currency.;
+                           ENG=Specifies the currency code for a job. By default, the currency code is empty. If you enter a foreign currency code, it results in the job being planned and invoiced in that currency.];
+                ApplicationArea=#Suite;
+                SourceExpr="Currency Code";
+                Importance=Promoted;
+                Editable=CurrencyCodeEditable;
+                OnValidate=BEGIN
+                             CurrencyCheck;
+                           END;
+                            }
+
+    { 100 ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the currency code you want to apply when creating invoices for a job. By default, the invoice currency code for a job is based on what currency code is defined on the customer card.;
+                           ENG=Specifies the currency code you want to apply when creating invoices for a job. By default, the invoice currency code for a job is based on what currency code is defined on the customer card.];
+                ApplicationArea=#Suite;
+                SourceExpr="Invoice Currency Code";
+                Editable=InvoiceCurrencyCodeEditable;
+                OnValidate=BEGIN
+                             CurrencyCheck;
+                           END;
+                            }
+
+    { 102 ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies how job cost values should be calculated if you change the Currency Date field on a planning line manually, if you change the exchange rate in the Currency Code field on a Job Planning Line, or if you run the Change Job Planning Line Dates batch job -- this depends if you have set up a job in a foreign currency by entering a code in the Currency Code field.;
+                           ENG=Specifies how job cost values should be calculated if you change the Currency Date field on a planning line manually, if you change the exchange rate in the Currency Code field on a Job Planning Line, or if you run the Change Job Planning Line Dates batch job -- this depends if you have set up a job in a foreign currency by entering a code in the Currency Code field.];
+                ApplicationArea=#Suite;
+                SourceExpr="Exch. Calculation (Cost)" }
+
+    { 104 ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies how job sales price values should be calculated if you change the Currency Date field on a planning line manually, if you change the exchange rate in the Currency Code field on a Job Planning Line, or if you run the Change Job Planning Line Dates batch job -- this depends if you have set up a job in a foreign currency by entering a code in the Currency Code field. The options are:;
+                           ENG=Specifies how job sales price values should be calculated if you change the Currency Date field on a planning line manually, if you change the exchange rate in the Currency Code field on a Job Planning Line, or if you run the Change Job Planning Line Dates batch job -- this depends if you have set up a job in a foreign currency by entering a code in the Currency Code field. The options are:];
+                ApplicationArea=#Suite;
+                SourceExpr="Exch. Calculation (Price)" }
+
+    { 1905734501;1;Group  ;
+                CaptionML=[ENU=WIP and Recognition;
+                           ENG=WIP and Recognition] }
+
+    { 7   ;2   ;Group     ;
+                CaptionML=[ENU=To Post;
+                           ENG=To Post];
+                GroupType=Group }
+
+    { 108 ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the posting date that was entered when the Job Calculate WIP batch job was last run.;
+                           ENG=Specifies the posting date that was entered when the Job Calculate WIP batch job was last run.];
+                ApplicationArea=#Jobs;
+                SourceExpr="WIP Posting Date" }
+
+    { 37  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the total WIP Sales amount that was last calculated for the job. The WIP Sales Amount for the job is the value WIP Sales Job WIP Entries less the value of the Recognized Sales Job WIP Entries. For jobs with WIP Methods of Cost Value or Cost of Sales, the WIP Sales Amount is normally 0.;
+                           ENG=Specifies the total WIP Sales amount that was last calculated for the job. The WIP Sales Amount for the job is the value WIP Sales Job WIP Entries less the value of the Recognised Sales Job WIP Entries. For jobs with WIP Methods of Cost Value or Cost of Sales, the WIP Sales Amount is normally 0.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Total WIP Sales Amount" }
+
+    { 17  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the sum of all applied sales that is related to the selected job in the general ledger.;
+                           ENG=Specifies the sum of all applied sales that is related to the selected job in the general ledger.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Applied Sales G/L Amount";
+                Visible=FALSE }
+
+    { 110 ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the total WIP cost amount that was last calculated for the job. The WIP Cost Amount for the job is the value WIP Cost Job WIP Entries less the value of the Recognized Cost Job WIP Entries. For jobs with WIP Methods of Sales Value or Percentage of Completion, the WIP Cost Amount is normally 0.;
+                           ENG=Specifies the total WIP cost amount that was last calculated for the job. The WIP Cost Amount for the job is the value WIP Cost Job WIP Entries less the value of the Recognised Cost Job WIP Entries. For jobs with WIP Methods of Sales Value or Percentage of Completion, the WIP Cost Amount is normally 0.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Total WIP Cost Amount" }
+
+    { 19  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the sum of all applied costs that is based on to the selected job in the general ledger.;
+                           ENG=Specifies the sum of all applied costs that is based on to the selected job in the general ledger.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Applied Costs G/L Amount";
+                Visible=FALSE }
+
+    { 16  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the recognized sales amount that was last calculated for the job. The Recog. Sales Amount for the job is the sum of the Recognized Sales Job WIP Entries.;
+                           ENG=Specifies the recognised sales amount that was last calculated for the job. The Recog. Sales Amount for the job is the sum of the Recognised Sales Job WIP Entries.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Recog. Sales Amount" }
+
+    { 18  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the Recognized Cost amount that was last calculated for the job. The Recognized Cost Amount for the job is the sum of the Recognized Cost Job WIP Entries.;
+                           ENG=Specifies the Recognised Cost amount that was last calculated for the job. The Recognised Cost Amount for the job is the sum of the Recognised Cost Job WIP Entries.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Recog. Costs Amount" }
+
+    { 71  ;3   ;Field     ;
+                Name=Recog. Profit Amount;
+                CaptionML=[ENU=Recog. Profit Amount;
+                           ENG=Recog. Profit Amount];
+                ToolTipML=[ENU=Specifies the recognized profit amount for the job.;
+                           ENG=Specifies the recognised profit amount for the job.];
+                ApplicationArea=#Jobs;
+                SourceExpr=CalcRecognizedProfitAmount }
+
+    { 74  ;3   ;Field     ;
+                Name=Recog. Profit %;
+                CaptionML=[ENU=Recog. Profit %;
+                           ENG=Recog. Profit %];
+                ToolTipML=[ENU=Specifies the recognized profit percentage for the job.;
+                           ENG=Specifies the recognised profit percentage for the job.];
+                ApplicationArea=#Jobs;
+                SourceExpr=CalcRecognizedProfitPercentage }
+
+    { 15  ;3   ;Field     ;
+                Name=Acc. WIP Costs Amount;
+                CaptionML=[ENU=Acc. WIP Costs Amount;
+                           ENG=Acc. WIP Costs Amount];
+                ToolTipML=[ENU=Specifies the total WIP costs for the job.;
+                           ENG=Specifies the total WIP costs for the job.];
+                ApplicationArea=#Jobs;
+                SourceExpr=CalcAccWIPCostsAmount;
+                Visible=FALSE }
+
+    { 13  ;3   ;Field     ;
+                Name=Acc. WIP Sales Amount;
+                CaptionML=[ENU=Acc. WIP Sales Amount;
+                           ENG=Acc. WIP Sales Amount];
+                ToolTipML=[ENU=Specifies the total WIP sales for the job.;
+                           ENG=Specifies the total WIP sales for the job.];
+                ApplicationArea=#Jobs;
+                SourceExpr=CalcAccWIPSalesAmount;
+                Visible=FALSE }
+
+    { 11  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the sum of the recognized sales amount that is associated with job tasks.;
+                           ENG=Specifies the sum of the recognised sales amount that is associated with job tasks.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Calc. Recog. Sales Amount";
+                Visible=FALSE }
+
+    { 9   ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the sum of the recognized costs amount that is associated with job tasks.;
+                           ENG=Specifies the sum of the recognised costs amount that is associated with job tasks.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Calc. Recog. Costs Amount";
+                Visible=FALSE }
+
+    { 5   ;2   ;Group     ;
+                CaptionML=[ENU=Posted;
+                           ENG=Posted];
+                GroupType=Group }
+
+    { 116 ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the posting date that was entered when the Job Post WIP to general ledger batch job was last run.;
+                           ENG=Specifies the posting date that was entered when the Job Post WIP to general ledger batch job was last run.];
+                ApplicationArea=#Jobs;
+                SourceExpr="WIP G/L Posting Date" }
+
+    { 41  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the total WIP Sales amount that was last posted to the general ledger for the job. The WIP Sales Amount for the job is the value WIP Sales Job WIP G/L Entries less the value of the Recognized Sales Job WIP G/L Entries. For jobs with WIP Methods of Cost Value or Cost of Sales, the WIP Sales Amount is normally 0.;
+                           ENG=Specifies the total WIP Sales amount that was last posted to the general ledger for the job. The WIP Sales Amount for the job is the value WIP Sales Job WIP G/L Entries less the value of the Recognised Sales Job WIP G/L Entries. For jobs with WIP Methods of Cost Value or Cost of Sales, the WIP Sales Amount is normally 0.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Total WIP Sales G/L Amount" }
+
+    { 118 ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the total WIP Cost amount that was last posted to the G/L for the job. The WIP Cost Amount for the job is the value WIP Cost Job WIP G/L Entries less the value of the Recognized Cost Job WIP G/L Entries. For jobs with WIP Methods of Sales Value or Percentage of Completion, the WIP Cost Amount is normally 0.;
+                           ENG=Specifies the total WIP Cost amount that was last posted to the G/L for the job. The WIP Cost Amount for the job is the value WIP Cost Job WIP G/L Entries less the value of the Recognised Cost Job WIP G/L Entries. For jobs with WIP Methods of Sales Value or Percentage of Completion, the WIP Cost Amount is normally 0.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Total WIP Cost G/L Amount" }
+
+    { 28  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the total Recognized Sales amount that was last posted to the general ledger for the job. The Recognized Sales G/L amount for the job is the sum of the Recognized Sales Job WIP G/L Entries.;
+                           ENG=Specifies the total Recognised Sales amount that was last posted to the general ledger for the job. The Recognised Sales G/L amount for the job is the sum of the Recognised Sales Job WIP G/L Entries.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Recog. Sales G/L Amount" }
+
+    { 29  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the total Recognized Cost amount that was last posted to the general ledger for the job. The Recognized Cost G/L amount for the job is the sum of the Recognized Cost Job WIP G/L Entries.;
+                           ENG=Specifies the total Recognised Cost amount that was last posted to the general ledger for the job. The Recognised Cost G/L amount for the job is the sum of the Recognised Cost Job WIP G/L Entries.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Recog. Costs G/L Amount" }
+
+    { 76  ;3   ;Field     ;
+                Name=Recog. Profit G/L Amount;
+                CaptionML=[ENU=Recog. Profit G/L Amount;
+                           ENG=Recog. Profit G/L Amount];
+                ToolTipML=[ENU=Specifies the total recognized profit G/L amount for this job.;
+                           ENG=Specifies the total recognised profit G/L amount for this job.];
+                ApplicationArea=#Jobs;
+                SourceExpr=CalcRecognizedProfitGLAmount }
+
+    { 78  ;3   ;Field     ;
+                Name=Recog. Profit G/L %;
+                CaptionML=[ENU=Recog. Profit G/L %;
+                           ENG=Recog. Profit G/L %];
+                ToolTipML=[ENU=Specifies the recognized profit G/L percentage for this job.;
+                           ENG=Specifies the recognised profit G/L percentage for this job.];
+                ApplicationArea=#Jobs;
+                SourceExpr=CalcRecognProfitGLPercentage }
+
+    { 21  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the sum of the recognized sales general ledger amount that is associated with job tasks.;
+                           ENG=Specifies the sum of the recognised sales general ledger amount that is associated with job tasks.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Calc. Recog. Sales G/L Amount";
+                Visible=FALSE }
+
+    { 23  ;3   ;Field     ;
+                ToolTipML=[ENU=Specifies the sum of the recognized costs general ledger amount that is associated with job tasks.;
+                           ENG=Specifies the sum of the recognised costs general ledger amount that is associated with job tasks.];
+                ApplicationArea=#Jobs;
+                SourceExpr="Calc. Recog. Costs G/L Amount";
+                Visible=FALSE }
+
+    { 1900000007;0;Container;
+                ContainerType=FactBoxArea }
+
+    { 1902018507;1;Part   ;
+                ApplicationArea=#Jobs;
+                SubPageLink=No.=FIELD(Bill-to Customer No.);
+                PagePartID=Page9082;
+                Visible=FALSE;
+                PartType=Page }
+
+    { 1902136407;1;Part   ;
+                ApplicationArea=#Suite;
+                SubPageLink=No.=FIELD(No.),
+                            Resource Filter=FIELD(Resource Filter),
+                            Posting Date Filter=FIELD(Posting Date Filter),
+                            Resource Gr. Filter=FIELD(Resource Gr. Filter),
+                            Planning Date Filter=FIELD(Planning Date Filter);
+                PagePartID=Page9098;
+                Visible=TRUE;
+                PartType=Page }
+
+    { 1905650007;1;Part   ;
+                ApplicationArea=#Jobs;
+                SubPageLink=No.=FIELD(No.),
+                            Resource Filter=FIELD(Resource Filter),
+                            Posting Date Filter=FIELD(Posting Date Filter),
+                            Resource Gr. Filter=FIELD(Resource Gr. Filter),
+                            Planning Date Filter=FIELD(Planning Date Filter);
+                PagePartID=Page9099;
+                Visible=FALSE;
+                PartType=Page }
+
+    { 44  ;1   ;Part      ;
+                CaptionML=[ENU=Job Details;
+                           ENG=Job Details];
+                ApplicationArea=#Jobs;
+                SubPageLink=No.=FIELD(No.);
+                PagePartID=Page1030;
+                Visible=JobSimplificationAvailable;
+                PartType=Page }
+
+    { 1900383207;1;Part   ;
+                Visible=FALSE;
+                PartType=System;
+                SystemPartID=RecordLinks }
+
+    { 1905767507;1;Part   ;
+                Visible=TRUE;
+                PartType=System;
+                SystemPartID=Notes }
+
+  }
+  CODE
+  {
+    VAR
+      InvoiceCurrencyCodeEditable@19003397 : Boolean INDATASET;
+      CurrencyCodeEditable@19053147 : Boolean INDATASET;
+      JobSimplificationAvailable@1000 : Boolean;
+
+    LOCAL PROCEDURE CurrencyCheck@3();
+    BEGIN
+      IF "Currency Code" <> ''THEN
+        InvoiceCurrencyCodeEditable := FALSE
+      ELSE
+        InvoiceCurrencyCodeEditable := TRUE;
+
+      IF "Invoice Currency Code" <> ''THEN
+        CurrencyCodeEditable := FALSE
+      ELSE
+        CurrencyCodeEditable := TRUE;
+    END;
+
+    LOCAL PROCEDURE BilltoCustomerNoOnAfterValidat@19044114();
+    BEGIN
+      CurrPage.UPDATE;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

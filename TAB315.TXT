@@ -1,0 +1,66 @@
+OBJECT Table 315 Jobs Setup
+{
+  OBJECT-PROPERTIES
+  {
+    Date=25/10/16;
+    Time=12:00:00;
+    Version List=NAVW110.00;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Jobs Setup;
+               ENG=Jobs Setup];
+  }
+  FIELDS
+  {
+    { 1   ;   ;Primary Key         ;Code10        ;CaptionML=[ENU=Primary Key;
+                                                              ENG=Primary Key] }
+    { 2   ;   ;Job Nos.            ;Code10        ;TableRelation="No. Series";
+                                                   CaptionML=[ENU=Job Nos.;
+                                                              ENG=Job Nos.] }
+    { 3   ;   ;Apply Usage Link by Default;Boolean;InitValue=Yes;
+                                                   CaptionML=[ENU=Apply Usage Link by Default;
+                                                              ENG=Apply Usage Link by Default] }
+    { 4   ;   ;Default WIP Method  ;Code20        ;TableRelation="Job WIP Method".Code;
+                                                   CaptionML=[ENU=Default WIP Method;
+                                                              ENG=Default WIP Method] }
+    { 5   ;   ;Default Job Posting Group;Code10   ;TableRelation="Job Posting Group".Code;
+                                                   CaptionML=[ENU=Default Job Posting Group;
+                                                              ENG=Default Job Posting Group] }
+    { 6   ;   ;Default WIP Posting Method;Option  ;CaptionML=[ENU=Default WIP Posting Method;
+                                                              ENG=Default WIP Posting Method];
+                                                   OptionCaptionML=[ENU=Per Job,Per Job Ledger Entry;
+                                                                    ENG=Per Job,Per Job Ledger Entry];
+                                                   OptionString=Per Job,Per Job Ledger Entry }
+    { 7   ;   ;Allow Sched/Contract Lines Def;Boolean;
+                                                   InitValue=Yes;
+                                                   CaptionML=[ENU=Allow Sched/Contract Lines Def;
+                                                              ENG=Allow Sched/Contract Lines Def] }
+    { 31  ;   ;Logo Position on Documents;Option  ;CaptionML=[ENU=Logo Position on Documents;
+                                                              ENG=Logo Position on Documents];
+                                                   OptionCaptionML=[ENU=No Logo,Left,Center,Right;
+                                                                    ENG=No Logo,Left,Centre,Right];
+                                                   OptionString=No Logo,Left,Center,Right }
+    { 40  ;   ;Job WIP Nos.        ;Code10        ;TableRelation="No. Series";
+                                                   CaptionML=[ENU=Job WIP Nos.;
+                                                              ENG=Job WIP Nos.] }
+    { 1001;   ;Automatic Update Job Item Cost;Boolean;
+                                                   AccessByPermission=TableData 27=R;
+                                                   CaptionML=[ENU=Automatic Update Job Item Cost;
+                                                              ENG=Automatic Update Job Item Cost] }
+  }
+  KEYS
+  {
+    {    ;Primary Key                             ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+
