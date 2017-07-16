@@ -9,9 +9,9 @@ Go to https://trello.com/app-key to retreive your application key and token.
 ## Dynamics NAV
 In Microsoft Dynamics NAV, go to the Departments/Jobs/Jobs Setup.
 
-1. Enter the Base URL: https://api.trello.com/1
-2. Enter your key in the  "API Key" field
-3. Enter your token in the "API Token" field
+1. Enter https://api.trello.com/1 in the "Base URL" field.
+2. Enter your key in the  "API Key" field.
+3. Enter your token in the "API Token" field.
 
 Go to Departments/Jobs/Jobs, open a Job Card and click "Deploy To Trello" on the ribbon.
 
