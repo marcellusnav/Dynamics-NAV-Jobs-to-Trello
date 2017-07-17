@@ -2,7 +2,7 @@ OBJECT Codeunit 50000 Trello Management
 {
   OBJECT-PROPERTIES
   {
-    Date=16/07/17;
+    Date=17/07/17;
     Time=00:00:00;
     Modified=Yes;
     Version List=TRELLO;
@@ -167,14 +167,14 @@ OBJECT Codeunit 50000 Trello Management
     BEGIN
     END;
 
-    PROCEDURE DeployNewTasks@1000000023(VAR Job@1000000000 : Record 167);
+    PROCEDURE SendNewTasks@1000000023(VAR Job@1000000000 : Record 167);
     BEGIN
-      OnBeforeDeployNewTasks(Job);
-      DoDeployNewTasks(Job);
-      OnAfterDeployNewTasks(Job);
+      OnBeforeSendNewTasks(Job);
+      DoSendNewTasks(Job);
+      OnAfterSendNewTasks(Job);
     END;
 
-    LOCAL PROCEDURE DoDeployNewTasks@1000000022(VAR Job@1000000001 : Record 167);
+    LOCAL PROCEDURE DoSendNewTasks@1000000022(VAR Job@1000000001 : Record 167);
     VAR
       JobTask@1000000000 : Record 1001;
     BEGIN
@@ -190,12 +190,12 @@ OBJECT Codeunit 50000 Trello Management
     END;
 
     [Integration]
-    LOCAL PROCEDURE OnBeforeDeployNewTasks@1000000021(VAR Job@1000000000 : Record 167);
+    LOCAL PROCEDURE OnBeforeSendNewTasks@1000000021(VAR Job@1000000000 : Record 167);
     BEGIN
     END;
 
     [Integration]
-    LOCAL PROCEDURE OnAfterDeployNewTasks@1000000020(VAR Job@1000000000 : Record 167);
+    LOCAL PROCEDURE OnAfterSendNewTasks@1000000020(VAR Job@1000000000 : Record 167);
     BEGIN
     END;
 

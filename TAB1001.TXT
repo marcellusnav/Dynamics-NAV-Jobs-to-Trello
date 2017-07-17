@@ -2,7 +2,7 @@ OBJECT Table 1001 Job Task
 {
   OBJECT-PROPERTIES
   {
-    Date=16/07/17;
+    Date=17/07/17;
     Time=00:00:00;
     Modified=Yes;
     Version List=NAVW110.00,TRELLO;
@@ -368,9 +368,11 @@ OBJECT Table 1001 Job Task
                                                    Editable=No }
     { 50000;  ;Trello Card ID      ;Code30        ;CaptionML=[ENU=Trello Card ID;
                                                               ENG=Trello Card ID];
+                                                   Description=trello;
                                                    Editable=No }
     { 50001;  ;Trello Card Created ;Boolean       ;CaptionML=[ENU=Trello Card Created;
                                                               ENG=Trello Card Created];
+                                                   Description=trello;
                                                    Editable=No }
   }
   KEYS

@@ -2,7 +2,7 @@ OBJECT Table 315 Jobs Setup
 {
   OBJECT-PROPERTIES
   {
-    Date=16/07/17;
+    Date=17/07/17;
     Time=00:00:00;
     Modified=Yes;
     Version List=NAVW110.00,TRELLO;
@@ -50,11 +50,14 @@ OBJECT Table 315 Jobs Setup
                                                    CaptionML=[ENU=Automatic Update Job Item Cost;
                                                               ENG=Automatic Update Job Item Cost] }
     { 50000;  ;Trello API Key      ;Text80        ;CaptionML=[ENU=API Key;
-                                                              ENG=API Key] }
+                                                              ENG=API Key];
+                                                   Description=trello }
     { 50001;  ;Trello API Token    ;Text80        ;CaptionML=[ENU=API Token;
-                                                              ENG=API Token] }
+                                                              ENG=API Token];
+                                                   Description=trello }
     { 50002;  ;Trello API Base URL ;Text250       ;CaptionML=[ENU=Base URL;
-                                                              ENG=Base URL] }
+                                                              ENG=Base URL];
+                                                   Description=trello }
   }
   KEYS
   {

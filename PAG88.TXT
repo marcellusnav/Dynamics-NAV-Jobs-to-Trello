@@ -2,7 +2,7 @@ OBJECT Page 88 Job Card
 {
   OBJECT-PROPERTIES
   {
-    Date=16/07/17;
+    Date=17/07/17;
     Time=00:00:00;
     Modified=Yes;
     Version List=NAVW110.00.00.14199,NAVGB10.00.00.14199,TRELLO;
@@ -294,27 +294,29 @@ OBJECT Page 88 Job Card
                                  ENG=Trello];
                       ActionContainerType=NewDocumentItems }
       { 1000000005;1 ;Action    ;
-                      Name=DeployToTrello;
-                      CaptionML=[ENU=Deploy To Trello;
-                                 ENG=Deploy To Trello];
+                      Name=SendToTrello;
+                      CaptionML=[ENU=Send To Trello;
+                                 ENG=Send To Trello];
                       Promoted=Yes;
                       PromotedIsBig=Yes;
                       Image=TaskPage;
                       PromotedCategory=Process;
                       OnAction=BEGIN
-                                 DeployToTrello;
+                                 // TRELLO
+                                 SendToTrello;
                                END;
                                 }
       { 1000000006;1 ;Action    ;
-                      Name=DeployNewTasksToTrello;
-                      CaptionML=[ENU=Deploy New Tasks To Trello;
-                                 ENG=Deploy New Tasks To Trello];
+                      Name=SendNewTasksToTrello;
+                      CaptionML=[ENU=Send New Tasks To Trello;
+                                 ENG=Send New Tasks To Trello];
                       Promoted=Yes;
                       PromotedIsBig=Yes;
                       Image=TaskQualityMeasure;
                       PromotedCategory=Process;
                       OnAction=BEGIN
-                                 DeployNewJobTasksToTrello;
+                                 // TRELLO
+                                 SendNewJobTasksToTrello;
                                END;
                                 }
       { 1000000007;1 ;Action    ;
@@ -325,6 +327,7 @@ OBJECT Page 88 Job Card
                       Image=ResetStatus;
                       PromotedCategory=Process;
                       OnAction=BEGIN
+                                 // TRELLO
                                  ResetTrelloInfo;
                                END;
                                 }

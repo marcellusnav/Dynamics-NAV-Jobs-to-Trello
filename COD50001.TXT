@@ -1,8 +1,8 @@
-OBJECT Codeunit 50001 Deploy Job Method
+OBJECT Codeunit 50001 Send Job Method
 {
   OBJECT-PROPERTIES
   {
-    Date=16/07/17;
+    Date=17/07/17;
     Time=00:00:00;
     Modified=Yes;
     Version List=TRELLO;
@@ -11,7 +11,7 @@ OBJECT Codeunit 50001 Deploy Job Method
   {
     TableNo=167;
     OnRun=BEGIN
-            DeployJobToTrello(Rec);
+            SendJobToTrello(Rec);
           END;
 
   }
@@ -20,14 +20,14 @@ OBJECT Codeunit 50001 Deploy Job Method
     VAR
       TrelloManagement@1000000001 : Codeunit 50000;
 
-    PROCEDURE DeployJobToTrello@1000000001(VAR Job@1000000000 : Record 167);
+    PROCEDURE SendJobToTrello@1000000001(VAR Job@1000000000 : Record 167);
     BEGIN
-      OnBeforeDeployJobToTrello(Job);
-      DoDeployJobToTrello(Job);
-      OnAfterDeployJobToTrello(Job);
+      OnBeforeSendJobToTrello(Job);
+      DoSendJobToTrello(Job);
+      OnAfterSendJobToTrello(Job);
     END;
 
-    LOCAL PROCEDURE DoDeployJobToTrello@1000000002(VAR Job@1000000000 : Record 167);
+    LOCAL PROCEDURE DoSendJobToTrello@1000000002(VAR Job@1000000000 : Record 167);
     BEGIN
       TrelloManagement.CreateBoard(Job);
       CreateLists(Job);
@@ -35,12 +35,12 @@ OBJECT Codeunit 50001 Deploy Job Method
     END;
 
     [Integration]
-    LOCAL PROCEDURE OnBeforeDeployJobToTrello@1000000003(VAR Job@1000000000 : Record 167);
+    LOCAL PROCEDURE OnBeforeSendJobToTrello@1000000003(VAR Job@1000000000 : Record 167);
     BEGIN
     END;
 
     [Integration]
-    LOCAL PROCEDURE OnAfterDeployJobToTrello@1000000004(VAR Job@1000000000 : Record 167);
+    LOCAL PROCEDURE OnAfterSendJobToTrello@1000000004(VAR Job@1000000000 : Record 167);
     BEGIN
     END;
 

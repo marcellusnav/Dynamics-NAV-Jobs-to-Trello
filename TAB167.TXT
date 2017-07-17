@@ -2,7 +2,7 @@ OBJECT Table 167 Job
 {
   OBJECT-PROPERTIES
   {
-    Date=16/07/17;
+    Date=17/07/17;
     Time=00:00:00;
     Modified=Yes;
     Version List=NAVW110.00.00.16585,TRELLO;
@@ -623,13 +623,16 @@ OBJECT Table 167 Job
                                                               ENG=Project Manager] }
     { 50000;  ;Trello Board ID     ;Text30        ;CaptionML=[ENU=Trello Board ID;
                                                               ENG=Trello Board ID];
+                                                   Description=trello;
                                                    Editable=No }
     { 50001;  ;Trello Starting List ID;Text80     ;CaptionML=[ENU=Trello Starting List ID;
                                                               ENG=Trello Starting List ID];
+                                                   Description=trello;
                                                    Editable=No }
     { 50002;  ;Trello Board URL    ;Text250       ;ExtendedDatatype=URL;
                                                    CaptionML=[ENU=Trello Board URL;
                                                               ENG=Trello Board URL];
+                                                   Description=trello;
                                                    Editable=No }
   }
   KEYS
@@ -1164,18 +1167,18 @@ OBJECT Table 167 Job
         ReportSelections.Usage::JQ,Rec,FIELDNO("No."),DocTxt,FIELDNO("Bill-to Customer No."),ShowDialog);
     END;
 
-    LOCAL PROCEDURE "//TRELLO//"@1000000000();
+    LOCAL PROCEDURE "//TRELLO"@1000000000();
     BEGIN
     END;
 
-    PROCEDURE DeployToTrello@1000000001();
+    PROCEDURE SendToTrello@1000000001();
     BEGIN
-      DeployJobMethod.DeployJobToTrello(Rec);
+      DeployJobMethod.SendJobToTrello(Rec);
     END;
 
-    PROCEDURE DeployNewJobTasksToTrello@1000000003();
+    PROCEDURE SendNewJobTasksToTrello@1000000003();
     BEGIN
-      TrelloManagement.DeployNewTasks(Rec);
+      TrelloManagement.SendNewTasks(Rec);
     END;
 
     PROCEDURE ResetTrelloInfo@1000000002();
@@ -1187,7 +1190,7 @@ OBJECT Table 167 Job
     {
       // TRELLO //
       New Fields: "Trello Board ID", "Trello Starting List ID", "Trello Board URL"
-      New Functions: DeployToTrello, DeployNewJobTasksToTrello, ResetTrelloInfo
+      New Functions: SendToTrello, SendNewJobTasksToTrello, ResetTrelloInfo
       // TRELLO //
     }
     END.
